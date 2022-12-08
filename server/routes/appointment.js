@@ -4,7 +4,7 @@ const uuid = require('uuid');
 // recordRoutes is an instance of the express router.
 // We use it to define our routes.
 // The router will be added as a middleware and will take control of requests starting with path /listings.
-const daycareRoutes = express.Router();
+const appointmentRoutes = express.Router();
 
 // This will help us connect to the database
 const db = require('../db/conn');
@@ -12,15 +12,15 @@ const db = require('../db/conn');
 
 // Read
 // This section will help you get a list of all the documents.
-daycareRoutes.route("/daycare").get(async function (req, res) {
+appointmentRoutes.route("/appointment").get(async function (req, res) {
     const dbConnect = db.getDb();
   
     dbConnect
-      .collection("daycareDetails")
+      .collection("appointmentDetails")
       .find({}).limit(50)
       .toArray(function (err, result) {
         if (err) {
-          res.status(400).send("Error fetching daycares!");
+          res.status(400).send("Error fetching appointment!");
        } else {
           res.json(result);
         }
@@ -28,34 +28,33 @@ daycareRoutes.route("/daycare").get(async function (req, res) {
   });
 
   // This section will help you create a new document.
-  daycareRoutes.route("/daycare/create").post(function (req, res) {
+  appointmentRoutes.route("/appointment/create").post(function (req, res) {
     const dbConnect = db.getDb();
     const daycareDocument = {
-      daycare_id: uuid.v1(),
-      owner: req.body.owner,
-      address: req.body.address,
-      location: req.body.location,
-      email:req.body.email,
-      phoneNumber:req.body.phoneNumber,
-      imageUrl:req.body.imageUrl,
-      approvalStatus:req.body.approvalStatus,
-      appointmentList:req.body.appointmentList
+      appointment_id: uuid.v1(),
+      customerName: req.body.customerName,
+      date: new Date(),
+      phoneNumber: req.body.phoneNumber,
+      startTime:req.body.startTime,
+      endTime:req.body.endTime,
+      daycare_name:req.body.daycare_name,
+      status:req.body.status,
     };
   
     dbConnect
-      .collection("daycareDetails")
+      .collection("appointmentDetails")
       .insertOne(daycareDocument, function (err, result) {
         if (err) {
-          res.status(400).send("Error inserting daycare!");
+          res.status(400).send("Error inserting appointment!");
         } else {
-          console.log(`Added a new daycare with id ${result.insertedId}`);
+          console.log(`Added a new appointment with id ${result.insertedId}`);
           res.status(204).send();
         }
       });
   });
 
   // This section will help you update a document by id.
-  daycareRoutes.route("/daycare/update").post(function (req, res) {
+  appointmentRoutes.route("/appointment/update").post(function (req, res) {
   const dbConnect = db.getDb();
   const daycareQuery = { _id: req.body.id };
   const updates = {
@@ -65,10 +64,10 @@ daycareRoutes.route("/daycare").get(async function (req, res) {
   };
 
   dbConnect
-    .collection("daycareDetails")
+    .collection("appointmentDetails")
     .updateOne(daycareQuery, updates, function (err, _result) {
       if (err) {
-        res.status(400).send(`Error updating likes on daycare with id ${daycareQuery.id}!`);
+        res.status(400).send(`Error updating likes on appointment with id ${daycareQuery.id}!`);
       } else {
         console.log("1 document updated");
       }
@@ -76,19 +75,19 @@ daycareRoutes.route("/daycare").get(async function (req, res) {
 });
 
 // This section will help you delete a record.
-daycareRoutes.route("/daycare/delete/:id").delete((req, res) => {
+appointmentRoutes.route("/appointment/delete/:id").delete((req, res) => {
   const dbConnect = db.getDb();
   const daycareQuery = { daycare_id: req.body.id };
 
   dbConnect
-    .collection("daycareDetails")
+    .collection("appointmentDetails")
     .deleteOne(daycareQuery, function (err, _result) {
       if (err) {
-        res.status(400).send(`Error deleting daycare with id ${daycareQuery.daycare_id}!`);
+        res.status(400).send(`Error deleting appointment with id ${daycareQuery.daycare_id}!`);
       } else {
         console.log("1 document deleted");
       }
     });
 });
 
-module.exports = daycareRoutes;
+module.exports = appointmentRoutes;

@@ -1,94 +1,95 @@
 const express = require("express");
-const uuid = require('uuid');
+const Daycare = require("../models/daycareModel");
 
-// recordRoutes is an instance of the express router.
-// We use it to define our routes.
-// The router will be added as a middleware and will take control of requests starting with path /listings.
+// daycareRoutes is an instance of the express router.
 const daycareRoutes = express.Router();
 
 // This will help us connect to the database
-const db = require('../db/conn');
-
+const db = require("../db/conn");
 
 // Read
 // This section will help you get a list of all the documents.
 daycareRoutes.route("/daycare").get(async function (req, res) {
-    const dbConnect = db.getDb();
-  
-    dbConnect
-      .collection("daycareDetails")
-      .find({}).limit(50)
-      .toArray(function (err, result) {
-        if (err) {
-          res.status(400).send("Error fetching daycares!");
-       } else {
-          res.json(result);
-        }
-      });
-  });
-
-  // This section will help you create a new document.
-  daycareRoutes.route("/daycare/create").post(function (req, res) {
-    const dbConnect = db.getDb();
-    const daycareDocument = {
-      daycare_id: uuid.v1(),
-      owner: req.body.owner,
-      address: req.body.address,
-      location: req.body.location,
-      email:req.body.email,
-      phoneNumber:req.body.phoneNumber,
-      imageUrl:req.body.imageUrl,
-      approvalStatus:req.body.approvalStatus,
-      appointmentList:req.body.appointmentList
-    };
-  
-    dbConnect
-      .collection("daycareDetails")
-      .insertOne(daycareDocument, function (err, result) {
-        if (err) {
-          res.status(400).send("Error inserting daycare!");
-        } else {
-          console.log(`Added a new daycare with id ${result.insertedId}`);
-          res.status(204).send();
-        }
-      });
-  });
-
-  // This section will help you update a document by id.
-  daycareRoutes.route("/daycare/update").post(function (req, res) {
   const dbConnect = db.getDb();
-  const daycareQuery = { _id: req.body.id };
-  const updates = {
-    $inc: {
-      likes: 1
-    }
-  };
 
   dbConnect
     .collection("daycareDetails")
-    .updateOne(daycareQuery, updates, function (err, _result) {
+    .find({})
+    .limit(50)
+    .toArray(function (err, result) {
       if (err) {
-        res.status(400).send(`Error updating likes on daycare with id ${daycareQuery.id}!`);
+        res.status(400).send("Error fetching daycares!");
       } else {
-        console.log("1 document updated");
+        res.json(result);
       }
     });
 });
 
-// This section will help you delete a record.
-daycareRoutes.route("/daycare/delete/:id").delete((req, res) => {
+// Get Daycare by id
+daycareRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
   const dbConnect = db.getDb();
-  const daycareQuery = { daycare_id: req.body.id };
+  try {
+    const daycare = await dbConnect
+      .collection("daycareDetails")
+      .findOne({ daycare_id: req.params.daycare_id });
+    res.send(daycare);
+  } catch {
+    res.status(404);
+    res.send({ error: "Daycare doesn't exist!" });
+  }
+});
 
-  dbConnect
+// This section will help you create a new document.
+daycareRoutes.route("/daycare/create").post(async (req, res) => {
+  const dbConnect = db.getDb();
+  const create = await Daycare.create(req.body);
+  dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
+    if (err) {
+      res.status(400).send("Error inserting daycare!");
+    } else {
+      return res.status(201).json(create);
+    }
+  });
+});
+
+// This section will help you update a document by id.
+daycareRoutes.route("/daycare/update/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const updates = {
+    $set: {
+      daycare_name: req.body.daycare_name,
+      address: req.body.address,
+      location: req.body.location,
+      owner: req.body.owner,
+      phoneNumber: req.body.phoneNumber,
+      email: req.body.email,
+      imageUrl: req.body.imageUrl,
+      approvalStatus: req.body.approvalStatus,
+      appointmentList: req.body.appointmentList,
+    },
+  };
+  await dbConnect
     .collection("daycareDetails")
-    .deleteOne(daycareQuery, function (err, _result) {
+    .updateOne({ daycare_id: req.params.id }, updates, (err, _result) => {
       if (err) {
-        res.status(400).send(`Error deleting daycare with id ${daycareQuery.daycare_id}!`);
+        res.status(400).send(`Error updating on daycare!`);
       } else {
-        console.log("1 document deleted");
+        res.status(200).send(updates);
       }
     });
+});
+
+// This section will help you delete a daycare.
+daycareRoutes.route("/daycare/delete/:id").delete(async (req, res) => {
+  const dbConnect = db.getDb();
+  try {
+    await dbConnect
+      .collection("daycareDetails")
+      .deleteOne({ daycare_id: req.params.id });
+    res.status(200).send("daycare has been deleted!");
+  } catch {
+    res.status(404).send({ error: "Daycare doesn't exist!" });
+  }
 });
 
 module.exports = daycareRoutes;

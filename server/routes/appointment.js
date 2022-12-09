@@ -73,7 +73,7 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
   };
   await dbConnect
     .collection("appointmentDetails")
-    .updateOne({ apointment_id: req.params.id }, updates, (err, _result) => {
+    .updateOne({ appointment_id: req.params.id }, updates, (err, _result) => {
       if (err) {
         res.status(400).send(`Error updating on appointment!`);
       } else {

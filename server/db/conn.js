@@ -8,22 +8,14 @@ const client = new MongoClient(connectionString, {
 let dbConnection;
 
 module.exports = {
-  connectToServer: function (callback) {
-    MongoClient.connect(process.env.ATLAS_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }, (err, db) => {
-      
-      if (err || !db) {
-        return callback(err);
-      }
-
-      dbConnection = db.db("daycare_db");
-      console.log("Successfully connected to MongoDB.");
-
+  connectToServer: async function (callback) {
+    try{
+      client.connect();
+      dbConnection = client.db("daycare_db");
       return callback();
-    });
-  },
+  }catch(err){
+      console.log(err)
+  }},
 
   getDb: function () {
     return dbConnection;

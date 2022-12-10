@@ -39,12 +39,16 @@ const DaycareSchema = new mongoose.Schema({
   imageUrl: {
     type: String,
   },
+  description: {
+    type: String,
+  },
   approvalStatus: {
     type: String,
     required: false,
     default: "Unautorized",
   },
   appointmentList: { type: Array, ref: "Appointment" },
+  reviews: { type: Array, ref: "Review" },
 });
 
 module.exports = mongoose.model("Daycare", DaycareSchema);

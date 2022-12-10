@@ -14,6 +14,7 @@ mongoose.set("strictQuery", true);
 // Routes
 app.use(require("./server/routes/daycare"));
 app.use(require("./server/routes/appointment"));
+app.use(require("./server/routes/review"));
 
 // get MongoDB driver connection
 const db = require("./server/db/conn");

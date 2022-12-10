@@ -23,8 +23,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Global error handling
-app.use(function (err, req, res) {
+app.use((err, req, res, next) => {
   console.error(err.stack);
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  req.header("Allow-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET, OPTIONS");
+  if (req.method === 'OPTIONS') {
+    res.send(200).json({});
+  } else {
+    next();
+  }
 });
 
 // perform a database connection when the server starts
@@ -55,3 +67,14 @@ const start = async () => {
 
 start();
 
+exports.handler = async (event,context) => {
+  const response = {
+      statusCode: 200,
+      headers: {
+          "Access-Control-Allow-Headers" : "Content-Type",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE"
+      },
+  };
+  return response;
+};

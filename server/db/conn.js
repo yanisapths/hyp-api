@@ -9,7 +9,11 @@ let dbConnection;
 
 module.exports = {
   connectToServer: function (callback) {
-    client.connect(function (err, db) {
+    MongoClient.connect(process.env.ATLAS_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }, (err, db) => {
+      
       if (err || !db) {
         return callback(err);
       }

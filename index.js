@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const express = require("express");
 var cors = require("cors");
 const bodyParser = require("body-parser");
-const MongoClient = require("mongodb").MongoClient;
 const awsServerlessExpress = require("aws-serverless-express");
 
 var app = express();
@@ -57,40 +56,8 @@ db.connectToServer(function (err) {
   });
 });
 
-// Connect to MongoDB with the mongoose.connect()
-const start = async () => {
-  try {
-    await mongoose.connect(process.env.ATLAS_URI);
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
-  }
-};
-
-start();
-
-let cachedDb = null;
-
-async function connectToDatabase() {
-  if (cachedDb) {
-    return cachedDb;
-  }
-
-  // Connect to our MongoDB database hosted on MongoDB Atlas
-  const client = await MongoClient.connect(process.env.ATLAS_URI);
-
-  // Specify which database we want to use
-  const db = await client.db("daycare_db");
-
-  cachedDb = db;
-  return db;
-}
-
 exports.handler = async (event, context) => {
   context.callbackWaitsForEmptyEventLoop = false;
-  // const db = await connectToDatabase();
-  if (db === null) db = await connectToDatabase();
-
   const server = awsServerlessExpress.createServer(app);
   return awsServerlessExpress.proxy(server, event, context, "PROMISE").promise;
 };

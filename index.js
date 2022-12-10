@@ -1,21 +1,23 @@
 // Loads the configuration from config.env to process.env
-require('dotenv').config({ path: 'config.env' });
+require("dotenv").config({ path: "config.env" });
 const mongoose = require("mongoose");
 const express = require("express");
-var cors = require('cors')
+var cors = require("cors");
 const bodyParser = require("body-parser");
+const MongoClient = require("mongodb").MongoClient;
+const awsServerlessExpress = require("aws-serverless-express");
 
 var app = express();
 app.use(express.json());
 
-mongoose.set('strictQuery', true);
+mongoose.set("strictQuery", true);
 
 // Routes
-app.use(require('./server/routes/daycare'));
-app.use(require('./server/routes/appointment'));
+app.use(require("./server/routes/daycare"));
+app.use(require("./server/routes/appointment"));
 
 // get MongoDB driver connection
-const db = require('./server/db/conn');
+const db = require("./server/db/conn");
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
@@ -31,8 +33,11 @@ app.use((err, req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  req.header("Allow-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET, OPTIONS");
-  if (req.method === 'OPTIONS') {
+  req.header(
+    "Allow-Control-Allow-Methods",
+    "PUT, POST, PATCH, DELETE, GET, OPTIONS"
+  );
+  if (req.method === "OPTIONS") {
     res.send(200).json({});
   } else {
     next();
@@ -52,14 +57,11 @@ db.connectToServer(function (err) {
   });
 });
 
-
 // Connect to MongoDB with the mongoose.connect()
 const start = async () => {
   try {
-    await mongoose.connect(
-      process.env.ATLAS_URI
-    );
-   } catch (error) {
+    await mongoose.connect(process.env.ATLAS_URI);
+  } catch (error) {
     console.error(error);
     process.exit(1);
   }
@@ -67,14 +69,28 @@ const start = async () => {
 
 start();
 
-exports.handler = async (event,context) => {
-  const response = {
-      statusCode: 200,
-      headers: {
-          "Access-Control-Allow-Headers" : "Content-Type",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE"
-      },
-  };
-  return response;
+let cachedDb = null;
+
+async function connectToDatabase() {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  // Connect to our MongoDB database hosted on MongoDB Atlas
+  const client = await MongoClient.connect(process.env.ATLAS_URI);
+
+  // Specify which database we want to use
+  const db = await client.db("daycare_db");
+
+  cachedDb = db;
+  return db;
+}
+
+exports.handler = async (event, context) => {
+  context.callbackWaitsForEmptyEventLoop = false;
+  // const db = await connectToDatabase();
+  if (db === null) db = await connectToDatabase();
+
+  const server = awsServerlessExpress.createServer(app);
+  return awsServerlessExpress.proxy(server, event, context, "PROMISE").promise;
 };

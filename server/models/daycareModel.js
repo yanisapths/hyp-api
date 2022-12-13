@@ -52,8 +52,8 @@ const DaycareSchema = new mongoose.Schema({
     required: false,
     default: "Unautorized",
   },
-  appointmentList: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }], required: false,default:[],
-  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }], required: false,default:[],
+  appointmentList: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }], 
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }]
 });
 
 module.exports = mongoose.model("Daycare", DaycareSchema);

@@ -12,9 +12,6 @@ const AppointmentSchema = new mongoose.Schema({
   customerName: {
     type: String,
   },
-  date: {
-    type: Date,
-  },
   dateStart: {
     type: Date,
     required: false,
@@ -32,7 +29,6 @@ const AppointmentSchema = new mongoose.Schema({
   endTime: {
     type: String,
   },
-  daycare_name: { type: mongoose.Schema.Types.ObjectId, ref: "Daycare" },
   daycare_id: { type: mongoose.Schema.Types.ObjectId, ref: "Daycare" },
   status: {
     type: String,

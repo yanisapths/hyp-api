@@ -22,7 +22,7 @@ const DaycareSchema = new mongoose.Schema({
       type: String,
     },
     required: false,
-    default:[],
+    default:{},
     coordinates: [],
   },
   owner: {

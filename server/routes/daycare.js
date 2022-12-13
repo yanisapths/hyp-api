@@ -65,6 +65,7 @@ daycareRoutes.route("/daycare/update/:id").put(async (req, res) => {
       email: req.body.email,
       imageUrl: req.body.imageUrl,
       description: req.body.description,
+      price: req.body.price,
       approvalStatus: req.body.approvalStatus,
       appointmentList: req.body.appointmentList,
     },

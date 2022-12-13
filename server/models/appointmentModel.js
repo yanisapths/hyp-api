@@ -15,6 +15,14 @@ const AppointmentSchema = new mongoose.Schema({
   date: {
     type: Date,
   },
+  dateStart: {
+    type: Date,
+    required: false,
+  },
+  dateEnd: {
+    type: Date,
+    required: false,
+  },
   phoneNumber: {
     type: String,
   },
@@ -24,8 +32,8 @@ const AppointmentSchema = new mongoose.Schema({
   endTime: {
     type: String,
   },
-  daycare_name: { type: String, ref: "Daycare" },
-  daycare_id: { type: String, ref: "Daycare" },
+  daycare_name: { type: mongoose.Schema.Types.ObjectId, ref: "Daycare" },
+  daycare_id: { type: mongoose.Schema.Types.ObjectId, ref: "Daycare" },
   status: {
     type: String,
     default: "pending",

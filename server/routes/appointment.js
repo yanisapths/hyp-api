@@ -64,6 +64,8 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
       customerName: req.body.customerName,
       date: req.body.date,
       phoneNumber: req.body.phoneNumber,
+      dateStart: req.body.dateStart,
+      dateEnd: req.body.dateEnd,
       startTime: req.body.startTime,
       endTime: req.body.endTime,
       daycare_name: req.body.daycare_name,

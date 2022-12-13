@@ -18,8 +18,8 @@ const ReviewSchema = new mongoose.Schema({
   comments: { 
     type: String
   },
-  appointment_id: { type: String, ref: "Appointment" },
-  daycare_id: { type: String, ref: "Daycare" },
+  appointment_id: { type: mongoose.Schema.Types.ObjectId , ref: "Appointment" },
+  daycare_id: { type: mongoose.Schema.Types.ObjectId, ref: "Daycare" },
 });
 
 const Review = mongoose.model("Review", ReviewSchema);

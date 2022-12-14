@@ -17,6 +17,14 @@ daycareRoutes.route("/daycare/:daycare_id/:appointment").get(async function (req
   res.json(daycare); 
  });
 
+ // Get daycare's review
+daycareRoutes.route("/daycare/:daycare_id/review/:review").get(async function (req, res) {
+  const review = toId(req.params.review);
+  const daycare = await Daycare.findById(req.params.daycare_id);
+  daycare.reviews = review;
+  res.json(daycare); 
+ });
+
 // Read
 // This section will help you get a list of all the documents.
 daycareRoutes.route("/daycare").get(async function (req, res) {
@@ -77,6 +85,7 @@ daycareRoutes.route("/daycare/update/:id").put(async (req, res) => {
       price: req.body.price,
       approvalStatus: req.body.approvalStatus,
       appointmentList: req.body.appointmentList,
+      reviews: req.body.reviews,
     },
   };
   await dbConnect

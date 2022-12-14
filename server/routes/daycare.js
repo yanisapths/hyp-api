@@ -1,5 +1,7 @@
 const express = require("express");
 const Daycare = require("../models/daycareModel");
+const mongoose = require("mongoose");
+const toId = mongoose.Types.ObjectId;
 
 // daycareRoutes is an instance of the express router.
 const daycareRoutes = express.Router();
@@ -7,11 +9,18 @@ const daycareRoutes = express.Router();
 // This will help us connect to the database
 const db = require("../db/conn");
 
+// Get daycare's appointment
+daycareRoutes.route("/daycare/:daycare_id/:appointment").get(async function (req, res) {
+  const appointment = toId(req.params.appointment);
+  const daycare = await Daycare.findById(req.params.daycare_id);
+  daycare.appointmentList = appointment;
+  res.json(daycare); 
+ });
+
 // Read
 // This section will help you get a list of all the documents.
 daycareRoutes.route("/daycare").get(async function (req, res) {
   const dbConnect = db.getDb();
-
   dbConnect
     .collection("daycareDetails")
     .find({})

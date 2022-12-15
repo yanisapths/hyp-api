@@ -45,7 +45,7 @@ appointmentRoutes
   });
 
 // This section will help you create a new document.
-appointmentRoutes.route("/appointment/create/:id").post(async (req, res) => {
+appointmentRoutes.route("/appointment/create").post(async (req, res) => {
   const dbConnect = db.getDb();
   const create = await Appointment.create(req.body);
   dbConnect

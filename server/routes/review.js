@@ -1,5 +1,7 @@
 const express = require("express");
 const { Review } = require("../models/reviewModel")
+const mongoose = require("mongoose");
+const toId = mongoose.Types.ObjectId;
 
 // daycareRoutes is an instance of the express router.
 const reviewRoutes = express.Router();
@@ -31,7 +33,7 @@ reviewRoutes.route("/review/:review_id").get(async (req, res) => {
   try {
     const review = await dbConnect
       .collection("daycareReviews")
-      .findOne({ review_id : req.params.review_id });
+      .findOne(toId(req.params.review_id));
     res.send(review);
   } catch {
     res.status(404);

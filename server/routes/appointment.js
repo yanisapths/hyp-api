@@ -7,7 +7,6 @@ mongoose.set("strictQuery", false);
 
 // appointmentRoutes is an instance of the express router.
 const appointmentRoutes = express.Router();
-
 // This will help us connect to the database
 const db = require("../db/conn");
 
@@ -37,7 +36,7 @@ appointmentRoutes
     try {
       const appointment = await dbConnect
         .collection("appointmentDetails")
-        .findOne({ appointment_id: req.params.appointment_id });
+        .findOne(toId(req.params.appointment_id));
       res.send(appointment);
     } catch {
       res.status(404);

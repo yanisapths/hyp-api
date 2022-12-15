@@ -1,5 +1,7 @@
 const express = require("express");
-const Daycare = require("../models/daycareModel");
+const {Daycare} = require("../models/daycareModel");
+const {Review} = require("../models/reviewModel");
+const {Appointment} = require("../models/appointmentModel");
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 
@@ -10,20 +12,38 @@ const daycareRoutes = express.Router();
 const db = require("../db/conn");
 
 // Get daycare's appointment
-daycareRoutes.route("/daycare/:daycare_id/:appointment").get(async function (req, res) {
-  const appointment = toId(req.params.appointment);
-  const daycare = await Daycare.findById(req.params.daycare_id);
-  daycare.appointmentList = appointment;
-  res.json(daycare); 
- });
+daycareRoutes
+  .route("/daycare/:daycare_id/:appointment")
+  .get(async function (req, res) {
+    const daycareId = toId(req.params.daycare_id);
+    const appointment = toId(req.params.appointment);
+    const daycare = await Daycare.findById(daycareId);
+    daycare.appointmentList = appointment;
+    try {
+      const populated = await daycare.populate({path: "appointmentList", model: Appointment});
+      daycare.save();
+      res.send(populated);
+    } catch (err) {
+      res.status(404).send(err.message);
+    }
+  });
 
- // Get daycare's review
-daycareRoutes.route("/daycare/:daycare_id/review/:review").get(async function (req, res) {
-  const review = toId(req.params.review);
-  const daycare = await Daycare.findById(req.params.daycare_id);
-  daycare.reviews = review;
-  res.json(daycare); 
- });
+// Get daycare's review
+daycareRoutes
+  .route("/daycare/:daycare_id/review/:review_id")
+  .get(async (req, res) => {
+    const daycareId = toId(req.params.daycare_id);
+    const review = toId(req.params.review_id);
+    const daycare = await Daycare.findById(daycareId);
+    daycare.reviews = review;
+    try {
+      const populated = await daycare.populate({path: "reviews", model: Review});
+      daycare.save();
+      res.send(populated);
+    } catch (err) {
+      res.status(404).send(err.message);
+    }
+  });
 
 // Read
 // This section will help you get a list of all the documents.
@@ -48,7 +68,7 @@ daycareRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
   try {
     const daycare = await dbConnect
       .collection("daycareDetails")
-      .findOne({ daycare_id: req.params.daycare_id });
+      .findOne(toId(req.params.daycare_id));
     res.send(daycare);
   } catch {
     res.status(404);

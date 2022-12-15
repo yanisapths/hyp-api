@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const {Schema,model} = require("mongoose");
 const uuid = require("uuid");
 
-const DaycareSchema = new mongoose.Schema({
+const DaycareSchema = new Schema({
   daycare_id: {
     type: String,
     default: function genUUID() {
@@ -52,8 +52,10 @@ const DaycareSchema = new mongoose.Schema({
     required: false,
     default: "Unautorized",
   },
-  appointmentList: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }], 
-  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }]
+  reviews: [{ type: Schema.ObjectId, ref: "Review" }],
+  appointmentList: [{ type: Schema.ObjectId, ref: "Appointment" }], 
 });
 
-module.exports = mongoose.model("Daycare", DaycareSchema);
+const Daycare = model("Daycare", DaycareSchema);
+
+module.exports = { Daycare };

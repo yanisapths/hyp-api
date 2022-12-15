@@ -25,13 +25,13 @@ reviewRoutes.route("/review").get(async function (req, res) {
     });
 });
 
-// Get Daycare by id
+// Get Review by id
 reviewRoutes.route("/review/:review_id").get(async (req, res) => {
   const dbConnect = db.getDb();
   try {
     const review = await dbConnect
       .collection("daycareReviews")
-      .findOne({ review_id : req.params.daycare_id });
+      .findOne({ review_id : req.params.review_id });
     res.send(review);
   } catch {
     res.status(404);
@@ -71,7 +71,7 @@ reviewRoutes.route("/review/update/:id").put(async (req, res) => {
     });
 });
 
-// This section will help you delete a daycare.
+// This section will help you delete a review.
 reviewRoutes.route("/review/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
   try {

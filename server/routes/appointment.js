@@ -1,5 +1,9 @@
 const express = require("express");
 const { Appointment } = require("../models/appointmentModel");
+const { Daycare } = require("../models/daycareModel");
+const mongoose = require("mongoose");
+const toId = mongoose.Types.ObjectId;
+mongoose.set("strictQuery", false);
 
 // appointmentRoutes is an instance of the express router.
 const appointmentRoutes = express.Router();
@@ -42,16 +46,16 @@ appointmentRoutes
   });
 
 // This section will help you create a new document.
-appointmentRoutes.route("/appointment/create").post(async (req, res) => {
+appointmentRoutes.route("/appointment/create/:id").post(async (req, res) => {
   const dbConnect = db.getDb();
   const create = await Appointment.create(req.body);
   dbConnect
-    .collection("appointmentDetails")
-    .insertOne(create, (err, result) => {
-      if (err) {
-        res.status(400).send("Error inserting appointment!");
-      } else {
-        return res.status(201).json(create);
+  .collection("appointmentDetails")
+  .insertOne(create, async (err, result) => {
+    if (err) {
+      res.status(400).send("Error inserting appointment!");
+    } else {
+      return res.status(201).json(create);
       }
     });
 });

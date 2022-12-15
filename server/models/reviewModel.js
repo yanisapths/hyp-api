@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const {Schema,model} = require("mongoose");
 const uuid = require("uuid");
 
-const ReviewSchema = new mongoose.Schema({
+const ReviewSchema = new Schema({
   review_id: {
     type: String,
     default: function genUUID() {
@@ -18,10 +18,9 @@ const ReviewSchema = new mongoose.Schema({
   comments: { 
     type: String
   },
-  appointment_id: { type: mongoose.Schema.Types.ObjectId , ref: "Appointment" },
-  daycare_id: { type: mongoose.Schema.Types.ObjectId, ref: "Daycare" },
+  daycare_id: { type: Schema.ObjectId, ref: "Daycare" },
 });
 
-const Review = mongoose.model("Review", ReviewSchema);
+const Review = model("Review", ReviewSchema);
 
 module.exports = { Review };

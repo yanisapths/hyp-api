@@ -9,6 +9,11 @@ const AppointmentSchema = new Schema({
     },
     required: true,
   },
+  created_At: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
   customerName: {
     type: String,
   },

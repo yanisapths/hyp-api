@@ -65,7 +65,6 @@ clinicRoutes.route("/clinic/update/:id").put(async (req, res) => {
     },
   };
   const clinicId = toId(req.params.id);
-  console.log(toId(req.params.id));
   const clinic = await Clinic.findById(clinicId);
 
   await dbConnect.collection("daycareDetails").findOneAndUpdate(
@@ -91,10 +90,11 @@ clinicRoutes.route("/clinic/update/:id").put(async (req, res) => {
 // This section will help you delete a clinic.
 clinicRoutes.route("/clinic/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
+  const clinicId = toId(req.params.id);
   try {
     await dbConnect
       .collection("daycareDetails")
-      .deleteOne({ clinic_id: req.params.id });
+      .deleteOne({ _id: clinicId});
     res.status(200).send("clinic has been deleted!");
   } catch {
     res.status(404).send({ error: "clinic doesn't exist!" });

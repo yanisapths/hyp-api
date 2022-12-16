@@ -89,7 +89,7 @@ clinicRoutes.route("/clinic/update/:id").put(async (req, res) => {
 });
 
 // This section will help you delete a clinic.
-clinicRoutes.route("/daycare/delete/:id").delete(async (req, res) => {
+clinicRoutes.route("/clinic/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
   try {
     await dbConnect

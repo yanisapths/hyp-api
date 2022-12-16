@@ -27,6 +27,28 @@ reviewRoutes.route("/review").get(async function (req, res) {
     });
 });
 
+  // Get Review by daycare id
+  appointmentRoutes
+  .route("/review/match/:daycare_id")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const daycareId = toId(req.params.daycare_id);
+    try {
+      await dbConnect
+        .collection("daycareReviews")
+        .aggregate([
+          { $match: { 'daycare_id': new ObjectID(daycareId)} 
+        }
+      ]).toArray( (err , result) => {
+        res.send(result);
+      })
+  
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch daycare's reviews"});
+    }
+  });
+
 // Get Review by id
 reviewRoutes.route("/review/:review_id").get(async (req, res) => {
   const dbConnect = db.getDb();

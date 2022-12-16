@@ -28,78 +28,20 @@ daycareRoutes.route("/daycare").get(async function (req, res) {
     });
 });
 
-// Get daycare's appointment
-daycareRoutes
-  .route("/daycare/:daycare_id/:appointment")
-  .get(async function (req, res) {
-    const daycareId = toId(req.params.daycare_id);
-    const appointment = toId(req.params.appointment);
-    const daycare = await Daycare.findById(daycareId);
-    daycare.appointmentList = appointment;
-    try {
-      const populated = await daycare.populate({path: "appointmentList", model: Appointment});
-      daycare.save();
-      res.send(populated);
-    } catch (err) {
-      res.status(404).send(err.message);
-    }
-  });
-
-// Get daycare's review
-daycareRoutes
-  .route("/daycare/:daycare_id/review/:review_id")
-  .get(async (req, res) => {
-    const daycareId = toId(req.params.daycare_id);
-    const review = toId(req.params.review_id);
-    const daycare = await Daycare.findById(daycareId);
-    daycare.reviews = review;
-    try {
-      const populated = await daycare.populate({path: "reviews", model: Review});
-      daycare.save();
-      res.send(populated);
-    } catch (err) {
-      res.status(404).send(err.message);
-    }
-  });
-
 // Get Daycare by Id
-// daycareRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
-//   const dbConnect = db.getDb();
-//   try {
-//     const daycare = await dbConnect
-//       .collection("daycareDetails")
-//       .findOne(toId(req.params.daycare_id));
-//     res.send(daycare);
-//   } catch {
-//     res.status(404);
-//     res.send({ error: "Daycare doesn't exist!" });
-//   }
-// });
-
-// Get Daycare by Id
-daycareRoutes.route("/daycares/daycare/:id").get(async (req, res) => {
+daycareRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
   const dbConnect = db.getDb();
-  const daycareId = toId(req.params.id);
-
   try {
-    const daycare = await dbConnect.collection("daycareDetails").findOne({daycareId});
-    try {
-      const populated = await Daycare.findById(daycareId).populate({
-        path: "appointmentList",
-        model: Appointment,
-      })
-      .populate({
-        path: "reviews",
-        model: Review,
-      });
-      res.json(populated);
-    } catch (err) {
-      res.status(404).send(err.message);
-    }
+    const daycare = await dbConnect
+      .collection("daycareDetails")
+      .findOne(toId(req.params.daycare_id));
+    res.send(daycare);
   } catch {
+    res.status(404);
     res.send({ error: "Daycare doesn't exist!" });
   }
 });
+// });
 
 // This section will help you create a new document.
 daycareRoutes.route("/daycare/create").post(async (req, res) => {
@@ -162,3 +104,6 @@ daycareRoutes.route("/daycare/delete/:id").delete(async (req, res) => {
 });
 
 module.exports = daycareRoutes;
+
+
+

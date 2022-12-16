@@ -11,7 +11,7 @@ const db = require("../db/conn");
 
 // Read
 // This section will help you get a list of all the documents.
-clinicRoutes.route("/daycare").get(async function (req, res) {
+clinicRoutes.route("/clinic").get(async function (req, res) {
   const dbConnect = db.getDb();
   dbConnect
     .collection("daycareDetails")
@@ -19,7 +19,7 @@ clinicRoutes.route("/daycare").get(async function (req, res) {
     .limit(50)
     .toArray(function (err, result) {
       if (err) {
-        res.status(400).send("Error fetching daycares!");
+        res.status(400).send("Error fetching clinics!");
       } else {
         res.json(result);
       }
@@ -27,27 +27,27 @@ clinicRoutes.route("/daycare").get(async function (req, res) {
 });
 
 // Get Clinic by Id
-clinicRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
+clinicRoutes.route("/clinic/:clinic_id").get(async (req, res) => {
   const dbConnect = db.getDb();
   try {
-    const daycare = await dbConnect
+    const clinic = await dbConnect
       .collection("daycareDetails")
-      .findOne(toId(req.params.daycare_id));
-    res.send(daycare);
+      .findOne(toId(req.params.clinic_id));
+    res.send(clinic);
   } catch {
     res.status(404);
-    res.send({ error: "Daycare doesn't exist!" });
+    res.send({ error: "Clinic doesn't exist!" });
   }
 });
 // });
 
 // This section will help you create a new document.
-clinicRoutes.route("/daycare/create").post(async (req, res) => {
+clinicRoutes.route("/clinic/create").post(async (req, res) => {
   const dbConnect = db.getDb();
   const create = await Clinic.create(req.body);
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
     if (err) {
-      res.status(400).send("Error inserting daycare!");
+      res.status(400).send("Error inserting clinic!");
     } else {
       return res.status(201).json(create);
     }
@@ -55,7 +55,7 @@ clinicRoutes.route("/daycare/create").post(async (req, res) => {
 });
 
 // This section will help you update a document by id.
-clinicRoutes.route("/daycare/update/:id").put(async (req, res) => {
+clinicRoutes.route("/clinic/update/:id").put(async (req, res) => {
   const dbConnect = db.getDb();
   const updates = {
     $set: {
@@ -64,12 +64,12 @@ clinicRoutes.route("/daycare/update/:id").put(async (req, res) => {
       reviews: req.body.reviews,
     },
   };
-  const daycareId = toId(req.params.id);
+  const clinicId = toId(req.params.id);
   console.log(toId(req.params.id));
-  const daycare = await Clinic.findById(daycareId);
+  const clinic = await Clinic.findById(clinicId);
 
   await dbConnect.collection("daycareDetails").findOneAndUpdate(
-    { _id: daycareId },
+    { _id: clinicId },
     updates,
     {
       new: true,
@@ -79,9 +79,9 @@ clinicRoutes.route("/daycare/update/:id").put(async (req, res) => {
     },
     (err, _result) => {
       if (err) {
-        res.status(400).send(`Error updating on daycare!`);
+        res.status(400).send(`Error updating on clinic!`);
       } else {
-        daycare.save();
+        clinic.save();
         res.status(200).send(updates);
       }
     }
@@ -95,9 +95,9 @@ clinicRoutes.route("/daycare/delete/:id").delete(async (req, res) => {
     await dbConnect
       .collection("daycareDetails")
       .deleteOne({ clinic_id: req.params.id });
-    res.status(200).send("daycare has been deleted!");
+    res.status(200).send("clinic has been deleted!");
   } catch {
-    res.status(404).send({ error: "Daycare doesn't exist!" });
+    res.status(404).send({ error: "clinic doesn't exist!" });
   }
 });
 

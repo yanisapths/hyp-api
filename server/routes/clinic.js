@@ -1,19 +1,17 @@
 const express = require("express");
-const { Daycare } = require("../models/daycareModel");
-const { Review } = require("../models/reviewModel");
-const { Appointment } = require("../models/appointmentModel");
+const { Clinic } = require("../models/clinicModel");
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 
-// daycareRoutes is an instance of the express router.
-const daycareRoutes = express.Router();
+// clinicRoutes is an instance of the express router.
+const clinicRoutes = express.Router();
 
 // This will help us connect to the database
 const db = require("../db/conn");
 
 // Read
 // This section will help you get a list of all the documents.
-daycareRoutes.route("/daycare").get(async function (req, res) {
+clinicRoutes.route("/daycare").get(async function (req, res) {
   const dbConnect = db.getDb();
   dbConnect
     .collection("daycareDetails")
@@ -28,8 +26,8 @@ daycareRoutes.route("/daycare").get(async function (req, res) {
     });
 });
 
-// Get Daycare by Id
-daycareRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
+// Get Clinic by Id
+clinicRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
   const dbConnect = db.getDb();
   try {
     const daycare = await dbConnect
@@ -44,7 +42,7 @@ daycareRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
 // });
 
 // This section will help you create a new document.
-daycareRoutes.route("/daycare/create").post(async (req, res) => {
+clinicRoutes.route("/daycare/create").post(async (req, res) => {
   const dbConnect = db.getDb();
   const create = await Daycare.create(req.body);
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
@@ -57,7 +55,7 @@ daycareRoutes.route("/daycare/create").post(async (req, res) => {
 });
 
 // This section will help you update a document by id.
-daycareRoutes.route("/daycare/update/:id").put(async (req, res) => {
+clinicRoutes.route("/daycare/update/:id").put(async (req, res) => {
   const dbConnect = db.getDb();
   const updates = {
     $set: {
@@ -90,20 +88,20 @@ daycareRoutes.route("/daycare/update/:id").put(async (req, res) => {
   );
 });
 
-// This section will help you delete a daycare.
-daycareRoutes.route("/daycare/delete/:id").delete(async (req, res) => {
+// This section will help you delete a clinic.
+clinicRoutes.route("/daycare/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
   try {
     await dbConnect
       .collection("daycareDetails")
-      .deleteOne({ daycare_id: req.params.id });
+      .deleteOne({ clinic_id: req.params.id });
     res.status(200).send("daycare has been deleted!");
   } catch {
     res.status(404).send({ error: "Daycare doesn't exist!" });
   }
 });
 
-module.exports = daycareRoutes;
+module.exports = clinicRoutes;
 
 
 

@@ -3,7 +3,7 @@ const { Review } = require("../models/reviewModel")
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 
-// daycareRoutes is an instance of the express router.
+// reviewRoutes is an instance of the express router.
 const reviewRoutes = express.Router();
 
 // This will help us connect to the database
@@ -27,17 +27,17 @@ reviewRoutes.route("/review").get(async function (req, res) {
     });
 });
 
-  // Get Review by daycare id
-  appointmentRoutes
-  .route("/review/match/:daycare_id")
+  // Get Review by clinic id
+  reviewRoutes
+  .route("/review/match/:id")
   .get(async (req, res) => {
     const dbConnect = db.getDb();
-    const daycareId = toId(req.params.daycare_id);
+    const clinicId = toId(req.params.id);
     try {
       await dbConnect
         .collection("daycareReviews")
         .aggregate([
-          { $match: { 'daycare_id': new ObjectID(daycareId)} 
+          { $match: { 'clinic_id': new ObjectID(clinicId)} 
         }
       ]).toArray( (err , result) => {
         res.send(result);
@@ -45,7 +45,7 @@ reviewRoutes.route("/review").get(async function (req, res) {
   
     } catch {
       res.status(404);
-      res.send({ error: "Failed to fetch daycare's reviews"});
+      res.send({ error: "Failed to fetch clinic's reviews"});
     }
   });
 

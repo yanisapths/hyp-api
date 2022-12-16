@@ -29,7 +29,7 @@ const AppointmentSchema = new Schema({
   endTime: {
     type: String,
   },
-  daycare_id: { type: Schema.ObjectId, ref: "Daycare" },
+  clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
   status: {
     type: String,
     default: "pending",

@@ -1,6 +1,5 @@
 const express = require("express");
 const { Appointment } = require("../models/appointmentModel");
-const { Daycare } = require("../models/daycareModel");
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 mongoose.set("strictQuery", false);
@@ -45,17 +44,17 @@ appointmentRoutes
     }
   });
 
-  // Get Appointment by daycare id
+  // Get Appointment by clinic id
 appointmentRoutes
-.route("/appointment/match/:daycare_id")
+.route("/appointment/match/:clinic_id")
 .get(async (req, res) => {
   const dbConnect = db.getDb();
-  const daycareId = toId(req.params.daycare_id);
+  const clinicId = toId(req.params.clinic_id);
   try {
     await dbConnect
       .collection("appointmentDetails")
       .aggregate([
-        { $match: { 'daycare_id': new ObjectID(daycareId)} 
+        { $match: { 'clinic_id': new ObjectID(clinicId)} 
       }
     ]).toArray( (err,result)=> {
       res.send(result);
@@ -63,14 +62,14 @@ appointmentRoutes
 
   } catch {
     res.status(404);
-    res.send({ error: "Failed to fetch daycare's appoinments"});
+    res.send({ error: "Failed to fetch clinic's appoinments"});
   }
 });
 
 // This section will help you create a new document.
-appointmentRoutes.route("/appointment/create/:daycare_id").post(async (req, res) => {
+appointmentRoutes.route("/appointment/create/:clinic_id").post(async (req, res) => {
   const dbConnect = db.getDb();
-  const daycareId = toId(req.params.daycare_id);
+  const clinicId = toId(req.params.clinic_id);
   const create = await Appointment.create({
     customerName: req.body.customerName,
     dateStart: req.body.dateStart,
@@ -78,7 +77,7 @@ appointmentRoutes.route("/appointment/create/:daycare_id").post(async (req, res)
     startTime: req.body.startTime,
     endTime: req.body.endTime,
     phoneNumber: req.body.phoneNumber,
-    daycare_id: daycareId
+    clinic_id: clinicId
   });
   dbConnect.collection("appointmentDetails").insertOne(create, (err, result) => {
     if (err) {
@@ -101,8 +100,7 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
       dateEnd: req.body.dateEnd,
       startTime: req.body.startTime,
       endTime: req.body.endTime,
-      daycare_name: req.body.daycare_name,
-      daycare_id: req.body.daycare_id,
+      clinic_id: req.body.clinic_id,
       status: req.body.status,
     },
   };

@@ -1,15 +1,15 @@
 const {Schema,model} = require("mongoose");
 const uuid = require("uuid");
 
-const DaycareSchema = new Schema({
-  daycare_id: {
+const ClinicSchema = new Schema({
+  clinic_id: {
     type: String,
     default: function genUUID() {
       return uuid.v1();
     },
     required: true,
   },
-  daycare_name: {
+  clinic_name: {
     type: String,
     required: true,
   },
@@ -56,6 +56,6 @@ const DaycareSchema = new Schema({
   appointmentList: [{ type: Schema.ObjectId, ref: "Appointment" }], 
 });
 
-const Daycare = model("Daycare", DaycareSchema);
+const Clinic = model("Clinic", ClinicSchema);
 
-module.exports = { Daycare };
+module.exports = { Clinic };

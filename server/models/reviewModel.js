@@ -18,7 +18,7 @@ const ReviewSchema = new Schema({
   comments: { 
     type: String
   },
-  daycare_id: { type: Schema.ObjectId, ref: "Daycare" },
+  clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
 });
 
 const Review = model("Review", ReviewSchema);

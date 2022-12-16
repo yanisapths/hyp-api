@@ -79,6 +79,7 @@ reviewRoutes.route("/review/create").post(async (req, res) => {
 // This section will help you update a document by id.
 reviewRoutes.route("/review/update/:id").put(async (req, res) => {
   const dbConnect = db.getDb();
+  const reviewId = toId(req.params.id);
   const updates = {
     $set: {
       comments: req.body.comments,
@@ -86,7 +87,7 @@ reviewRoutes.route("/review/update/:id").put(async (req, res) => {
   };
   await dbConnect
     .collection("daycareReviews")
-    .updateOne({ review_id: req.params.id }, updates, (err, _result) => {
+    .updateOne({ _id: reviewId }, updates, (err, _result) => {
       if (err) {
         res.status(400).send(`Error updating on review!`);
       } else {
@@ -98,10 +99,11 @@ reviewRoutes.route("/review/update/:id").put(async (req, res) => {
 // This section will help you delete a review.
 reviewRoutes.route("/review/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
+  const reviewId = toId(req.params.id);
   try {
     await dbConnect
       .collection("daycareReviews")
-      .deleteOne({ review_id: req.params.id });
+      .deleteOne({ _id: reviewId });
     res.status(200).send("Review has been deleted!");
   } catch {
     res.status(404).send({ error: "Review doesn't exist!" });

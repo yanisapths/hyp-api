@@ -91,6 +91,7 @@ appointmentRoutes.route("/appointment/create/:clinic_id").post(async (req, res) 
 // This section will help you update a document by id.
 appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
   const dbConnect = db.getDb();
+  const appoinmentId = toId(req.params.id);
   const updates = {
     $set: {
       customerName: req.body.customerName,
@@ -106,7 +107,7 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
   };
   await dbConnect
     .collection("appointmentDetails")
-    .updateOne({ appointment_id: req.params.id }, updates, (err, _result) => {
+    .updateOne({ _id: appoinmentId }, updates, (err, _result) => {
       if (err) {
         res.status(400).send(`Error updating on appointment!`);
       } else {
@@ -118,10 +119,11 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
 // This section will help you delete an appointment.
 appointmentRoutes.route("/appointment/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
+  const appoinmentId = toId(req.params.id);
   try {
     await dbConnect
       .collection("appointmentDetails")
-      .deleteOne({ appointment_id: req.params.id });
+      .deleteOne({ _id: appoinmentId });
     res.status(200).send("Appointment has been deleted!");
   } catch {
     res.status(404).send({ error: "Appointment doesn't exist!" });

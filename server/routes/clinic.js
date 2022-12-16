@@ -44,7 +44,7 @@ clinicRoutes.route("/daycare/:daycare_id").get(async (req, res) => {
 // This section will help you create a new document.
 clinicRoutes.route("/daycare/create").post(async (req, res) => {
   const dbConnect = db.getDb();
-  const create = await Daycare.create(req.body);
+  const create = await Clinic.create(req.body);
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
     if (err) {
       res.status(400).send("Error inserting daycare!");
@@ -66,7 +66,7 @@ clinicRoutes.route("/daycare/update/:id").put(async (req, res) => {
   };
   const daycareId = toId(req.params.id);
   console.log(toId(req.params.id));
-  const daycare = await Daycare.findById(daycareId);
+  const daycare = await Clinic.findById(daycareId);
 
   await dbConnect.collection("daycareDetails").findOneAndUpdate(
     { _id: daycareId },

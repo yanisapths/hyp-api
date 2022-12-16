@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const {Schema,model} = require("mongoose");
 const uuid = require("uuid");
 
-const AppointmentSchema = new mongoose.Schema({
+const AppointmentSchema = new Schema({
   appointment_id: {
     type: String,
     default: function genUUID() {
@@ -9,11 +9,21 @@ const AppointmentSchema = new mongoose.Schema({
     },
     required: true,
   },
+  created_At: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
   customerName: {
     type: String,
   },
-  date: {
+  dateStart: {
     type: Date,
+    required: false,
+  },
+  dateEnd: {
+    type: Date,
+    required: false,
   },
   phoneNumber: {
     type: String,
@@ -24,14 +34,13 @@ const AppointmentSchema = new mongoose.Schema({
   endTime: {
     type: String,
   },
-  daycare_name: { type: String, ref: "Daycare" },
-  daycare_id: { type: String, ref: "Daycare" },
+  clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
   status: {
     type: String,
     default: "pending",
   },
 });
 
-const Appointment = mongoose.model("Appointment", AppointmentSchema);
+const Appointment = model("Appointment", AppointmentSchema);
 
 module.exports = { Appointment };

@@ -12,7 +12,7 @@ app.use(express.json());
 mongoose.set("strictQuery", true);
 
 // Routes
-app.use(require("./server/routes/daycare"));
+app.use(require("./server/routes/clinic"));
 app.use(require("./server/routes/appointment"));
 app.use(require("./server/routes/review"));
 

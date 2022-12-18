@@ -44,12 +44,22 @@ clinicRoutes.route("/clinic/:clinic_id").get(async (req, res) => {
 // This section will help you create a new document.
 clinicRoutes.route("/clinic/create").post(async (req, res) => {
   const dbConnect = db.getDb();
-  const create = await Clinic.create(req.body);
+  const create = new Clinic({
+    clinic_name: req.body.clinic_name,
+    owner: req.body.owner,
+    phoneNumber: req.body.phoneNumber,
+    address: req.body.address,
+    description: req.body.description,
+    price: req.body.price,
+    email: req.body.email,
+    imageUrl: req.body.imageUrl,
+    location: req.body.location
+  });
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
     if (err) {
       res.status(400).send("Error inserting clinic!");
     } else {
-      return res.status(201).json(create);
+      return res.status(201).send(create);
     }
   });
 });

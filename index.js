@@ -10,6 +10,9 @@ var app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit:50000}));
+
 mongoose.set("strictQuery", true);
 
 // Routes
@@ -20,9 +23,6 @@ app.use(require("./server/routes/review"));
 // get MongoDB driver connection
 const db = require("./server/db/conn");
 const PORT = process.env.PORT || 5000;
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 // Global error handling
 app.use((err, req, res, next) => {

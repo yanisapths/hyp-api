@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 // Global error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "*, http://localhost:3000, https://daycare-portal.vercel.app");
   res.header("Access-Control-Allow-Credentials", true);
   res.header(
     "Access-Control-Allow-Headers",

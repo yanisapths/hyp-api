@@ -3,17 +3,12 @@ require("dotenv").config({ path: "config.env" });
 const mongoose = require("mongoose");
 const express = require("express");
 var cors = require("cors");
-const corsOptions ={
-  origin:'http://localhost:3000', 
-  credentials:true,            //access-control-allow-credentials:true
-  optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
 const bodyParser = require("body-parser");
 const awsServerlessExpress = require("aws-serverless-express");
 
 var app = express();
 app.use(express.json());
+app.use(cors());
 
 mongoose.set("strictQuery", true);
 
@@ -32,16 +27,15 @@ app.use(bodyParser.json());
 // Global error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  req.header(
-    "Allow-Control-Allow-Methods",
-    "PUT, POST, PATCH, DELETE, GET, OPTIONS"
-  );
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.setHeader('Access-Control-Allow-Credentials', true)
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  )
   if (req.method === "OPTIONS") {
     res.send(200).json({});
   } else {

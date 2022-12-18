@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "dev": "node index.js",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

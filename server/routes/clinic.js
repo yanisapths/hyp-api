@@ -53,7 +53,7 @@ clinicRoutes.route("/clinic/create").post(async (req, res) => {
     price: req.body.price,
     email: req.body.email,
     imageUrl: req.body.imageUrl,
-    location: req.body.location
+    location: req.body.location,
   });
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
     if (err) {
@@ -102,16 +102,26 @@ clinicRoutes.route("/clinic/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
   const clinicId = toId(req.params.id);
   try {
-    await dbConnect
-      .collection("daycareDetails")
-      .deleteOne({ _id: clinicId});
+    await dbConnect.collection("daycareDetails").deleteOne({ _id: clinicId });
     res.status(200).send("clinic has been deleted!");
   } catch {
     res.status(404).send({ error: "clinic doesn't exist!" });
   }
 });
 
+// Get clinic by owner name
+clinicRoutes.route("/clinic/owner/:owner").get(async (req, res) => {
+  const dbConnect = db.getDb();
+  const owner = req.params.owner;
+  try {
+    const clinic = await dbConnect
+      .collection("daycareDetails")
+      .findOne({ owner });
+    res.send(clinic);
+  } catch {
+    res.status(404);
+    res.send({ error: "Clinic doesn't exist!" });
+  }
+});
+
 module.exports = clinicRoutes;
-
-
-

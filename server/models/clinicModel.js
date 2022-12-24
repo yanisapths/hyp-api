@@ -53,16 +53,13 @@ const ClinicSchema = new Schema({
     default: "Unautorized",
   },
   openDay: {
-    type: String,
-    required: false,
+    type: [String],
   },
   openTime: {
     type: String,
-    required: false,
   },
   closeTime: {
     type: String,
-    required: false,
   },
   reviews: [{ type: Schema.ObjectId, ref: "Review" }],
   appointmentList: [{ type: Schema.ObjectId, ref: "Appointment" }], 

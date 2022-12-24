@@ -44,6 +44,8 @@ clinicRoutes.route("/clinic/:clinic_id").get(async (req, res) => {
 // This section will help you create a new document.
 clinicRoutes.route("/clinic/create").post(async (req, res) => {
   const dbConnect = db.getDb();
+  const time = new Date();
+
   const create = new Clinic({
     clinic_name: req.body.clinic_name,
     owner: req.body.owner,
@@ -54,6 +56,9 @@ clinicRoutes.route("/clinic/create").post(async (req, res) => {
     email: req.body.email,
     imageUrl: req.body.imageUrl,
     location: req.body.location,
+    openDay: req.body.openDay,
+    openTime: req.body.openTime,
+    closeTime: req.body.closeTime,
   });
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
     if (err) {

@@ -19,7 +19,7 @@ const AppointmentSchema = new Schema({
   },
   appointmentDate: {
     type: Date,
-    required: false,
+    default: Date.now,
   },
   appointmentTime: {
     type: String,

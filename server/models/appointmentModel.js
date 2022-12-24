@@ -17,21 +17,14 @@ const AppointmentSchema = new Schema({
   customerName: {
     type: String,
   },
-  dateStart: {
+  appointmentDate: {
     type: Date,
     required: false,
   },
-  dateEnd: {
-    type: Date,
-    required: false,
+  appointmentTime: {
+    type: String,
   },
   phoneNumber: {
-    type: String,
-  },
-  startTime: {
-    type: String,
-  },
-  endTime: {
     type: String,
   },
   clinic_id: { type: Schema.ObjectId, ref: "Clinic" },

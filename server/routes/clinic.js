@@ -59,6 +59,12 @@ clinicRoutes.route("/clinic/create").post(async (req, res) => {
     openDay: req.body.openDay,
     openTime: req.body.openTime,
     closeTime: req.body.closeTime,
+    ownerImageUrl: req.body.ownerImageUrl,
+    ownerContact: req.body.ownerContact,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    businessLicense: req.body.businessLicense,
+    professionalLicense: req.body.professionalLicense
   });
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
     if (err) {

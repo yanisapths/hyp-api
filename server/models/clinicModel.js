@@ -61,6 +61,29 @@ const ClinicSchema = new Schema({
   closeTime: {
     type: String,
   },
+  ownerImageUrl: {
+    type: String,
+  },
+  ownerContact: {
+    type: String,
+    required: true,
+  },
+  firstName: {
+    type: String,
+    required: false,
+  },
+  lastName: {
+    type: String,
+    required: false,
+  },
+  businessLicense: {
+    type: String,
+    required: true,
+  },
+  professionalLicense: {
+    type: String,
+    required: true,
+  },
   reviews: [{ type: Schema.ObjectId, ref: "Review" }],
   appointmentList: [{ type: Schema.ObjectId, ref: "Appointment" }], 
 });

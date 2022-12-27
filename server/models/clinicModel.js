@@ -63,6 +63,7 @@ const ClinicSchema = new Schema({
   },
   ownerImageUrl: {
     type: String,
+    required: true,
   },
   ownerContact: {
     type: String,
@@ -78,11 +79,11 @@ const ClinicSchema = new Schema({
   },
   businessLicense: {
     type: String,
-    required: true,
+    required: false,
   },
   professionalLicense: {
     type: String,
-    required: true,
+    required: false,
   },
   reviews: [{ type: Schema.ObjectId, ref: "Review" }],
   appointmentList: [{ type: Schema.ObjectId, ref: "Appointment" }], 

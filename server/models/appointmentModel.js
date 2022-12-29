@@ -17,6 +17,9 @@ const AppointmentSchema = new Schema({
   customerName: {
     type: String,
   },
+  appointmentPlace: {
+    type: String,
+  },
   appointmentDate: {
     type: Date,
     default: Date.now,

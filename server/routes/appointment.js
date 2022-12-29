@@ -72,10 +72,9 @@ appointmentRoutes.route("/appointment/create/:clinic_id").post(async (req, res) 
   const clinicId = toId(req.params.clinic_id);
   const create = await Appointment.create({
     customerName: req.body.customerName,
-    dateStart: req.body.dateStart,
-    dateEnd: req.body.dateEnd,
-    startTime: req.body.startTime,
-    endTime: req.body.endTime,
+    appointmentPlace: req.body.appointmentPlace,
+    appointmentDate: req.body.appointmentDate,
+    appointmentTime: req.body.appointmentTime,
     phoneNumber: req.body.phoneNumber,
     clinic_id: clinicId
   });

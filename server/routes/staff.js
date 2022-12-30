@@ -76,6 +76,7 @@ staffRoutes.route("/staff/create/:clinic_id").post(async (req, res) => {
     position: req.body.position,
     expertArea: req.body.expertArea,
     professionalLicense: req.body.professionalLicense,
+    staffImageUrl: req.body.staffImageUrl,
     clinic_id: clinicId
   });
   dbConnect.collection("clinicStaffDetails").insertOne(create, (err, result) => {

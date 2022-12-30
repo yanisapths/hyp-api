@@ -35,6 +35,10 @@ const StaffSchema = new Schema({
     type: String,
     required: false,
   },
+  staffImageUrl: {
+    type: String,
+    required: false,
+  },
 });
 
 const Staff = model("Staff", StaffSchema);

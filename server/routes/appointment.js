@@ -66,6 +66,28 @@ appointmentRoutes
   }
 });
 
+  // Get Appointment by clinic owner's email
+  appointmentRoutes
+  .route("/appointment/match/owner/:session_userId")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const session_userId = req.params.session_userId;
+    try {
+      await dbConnect
+        .collection("appointmentDetails")
+        .aggregate([
+          { $match: { 'owner_id': session_userId} 
+        }
+      ]).toArray( (err,result)=> {
+        res.send(result);
+      })
+  
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch clinic's appoinments"});
+    }
+  });
+
 // This section will help you create a new document.
 appointmentRoutes.route("/appointment/create/:clinic_id").post(async (req, res) => {
   const dbConnect = db.getDb();
@@ -76,7 +98,8 @@ appointmentRoutes.route("/appointment/create/:clinic_id").post(async (req, res) 
     appointmentDate: req.body.appointmentDate,
     appointmentTime: req.body.appointmentTime,
     phoneNumber: req.body.phoneNumber,
-    clinic_id: clinicId
+    clinic_id: clinicId,
+    clinic_email: req.body.clinicEmail
   });
   dbConnect.collection("appointmentDetails").insertOne(create, (err, result) => {
     if (err) {

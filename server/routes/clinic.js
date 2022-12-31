@@ -64,7 +64,8 @@ clinicRoutes.route("/clinic/create").post(async (req, res) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     businessLicense: req.body.businessLicense,
-    professionalLicense: req.body.professionalLicense
+    professionalLicense: req.body.professionalLicense,
+    owner_id: req.body.owner_id
   });
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
     if (err) {
@@ -120,14 +121,14 @@ clinicRoutes.route("/clinic/delete/:id").delete(async (req, res) => {
   }
 });
 
-// Get clinic by owner name
-clinicRoutes.route("/clinic/owner/:owner").get(async (req, res) => {
+// Get clinic by owner id
+clinicRoutes.route("/clinic/owner/:owner_id").get(async (req, res) => {
   const dbConnect = db.getDb();
-  const owner = req.params.owner;
+  const owner_id = req.params.owner_id;
   try {
     const clinic = await dbConnect
       .collection("daycareDetails")
-      .findOne({ owner });
+      .findOne({ owner_id });
     res.send(clinic);
   } catch {
     res.status(404);

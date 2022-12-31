@@ -88,6 +88,9 @@ const ClinicSchema = new Schema({
   reviews: [{ type: Schema.ObjectId, ref: "Review" }],
   appointmentList: [{ type: Schema.ObjectId, ref: "Appointment" }],
   staffList: [{ type: Schema.ObjectId, ref: "Staff" }], 
+  owner_id: {
+    type: String,
+  },
 });
 
 const Clinic = model("Clinic", ClinicSchema);

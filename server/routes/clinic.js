@@ -64,7 +64,8 @@ clinicRoutes.route("/clinic/create").post(async (req, res) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     businessLicense: req.body.businessLicense,
-    professionalLicense: req.body.professionalLicense
+    professionalLicense: req.body.professionalLicense,
+    owner_id: req.body.owner_id
   });
   dbConnect.collection("daycareDetails").insertOne(create, (err, result) => {
     if (err) {

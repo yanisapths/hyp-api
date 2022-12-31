@@ -30,6 +30,7 @@ const AppointmentSchema = new Schema({
   phoneNumber: {
     type: String,
   },
+  owner_id: { type: String, ref: "Clinic"},
   clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
   status: {
     type: String,

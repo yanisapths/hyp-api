@@ -121,14 +121,14 @@ clinicRoutes.route("/clinic/delete/:id").delete(async (req, res) => {
   }
 });
 
-// Get clinic by owner name
-clinicRoutes.route("/clinic/owner/:owner").get(async (req, res) => {
+// Get clinic by owner id
+clinicRoutes.route("/clinic/owner/:owner_id").get(async (req, res) => {
   const dbConnect = db.getDb();
-  const owner = req.params.owner;
+  const owner_id = req.params.owner_id;
   try {
     const clinic = await dbConnect
       .collection("daycareDetails")
-      .findOne({ owner });
+      .findOne({ owner_id });
     res.send(clinic);
   } catch {
     res.status(404);

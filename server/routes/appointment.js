@@ -68,7 +68,7 @@ appointmentRoutes
 
   // Get Appointment by clinic owner's email
   appointmentRoutes
-  .route("/appointment/match/:session_userId")
+  .route("/appointment/match/owner/:session_userId")
   .get(async (req, res) => {
     const dbConnect = db.getDb();
     const session_userId = req.params.session_userId;

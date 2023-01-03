@@ -99,7 +99,7 @@ appointmentRoutes.route("/appointment/create/:clinic_id").post(async (req, res) 
     appointmentTime: req.body.appointmentTime,
     phoneNumber: req.body.phoneNumber,
     clinic_id: clinicId,
-    clinic_email: req.body.clinicEmail
+    owner_id: req.body.owner_id
   });
   dbConnect.collection("appointmentDetails").insertOne(create, (err, result) => {
     if (err) {

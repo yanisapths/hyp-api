@@ -44,30 +44,27 @@ appointmentRoutes
     }
   });
 
-  // Get Appointment by clinic id
+// Get Appointment by clinic id
 appointmentRoutes
-.route("/appointment/match/:clinic_id")
-.get(async (req, res) => {
-  const dbConnect = db.getDb();
-  const clinicId = toId(req.params.clinic_id);
-  try {
-    await dbConnect
-      .collection("appointmentDetails")
-      .aggregate([
-        { $match: { 'clinic_id': new ObjectID(clinicId)} 
-      }
-    ]).toArray( (err,result)=> {
-      res.send(result);
-    })
+  .route("/appointment/match/:clinic_id")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const clinicId = toId(req.params.clinic_id);
+    try {
+      await dbConnect
+        .collection("appointmentDetails")
+        .aggregate([{ $match: { clinic_id: new ObjectID(clinicId) } }])
+        .toArray((err, result) => {
+          res.send(result);
+        });
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch clinic's appoinments" });
+    }
+  });
 
-  } catch {
-    res.status(404);
-    res.send({ error: "Failed to fetch clinic's appoinments"});
-  }
-});
-
-  // Get Appointment by clinic owner's email
-  appointmentRoutes
+// Get Appointment by clinic owner's email
+appointmentRoutes
   .route("/appointment/match/owner/:session_userId")
   .get(async (req, res) => {
     const dbConnect = db.getDb();
@@ -75,40 +72,43 @@ appointmentRoutes
     try {
       await dbConnect
         .collection("appointmentDetails")
-        .aggregate([
-          { $match: { 'owner_id': session_userId} 
-        }
-      ]).toArray( (err,result)=> {
-        res.send(result);
-      })
-  
+        .aggregate([{ $match: { owner_id: session_userId } }])
+        .toArray((err, result) => {
+          res.send(result);
+        });
     } catch {
       res.status(404);
-      res.send({ error: "Failed to fetch clinic's appoinments"});
+      res.send({ error: "Failed to fetch clinic's appoinments" });
     }
   });
 
 // This section will help you create a new document.
-appointmentRoutes.route("/appointment/create/:clinic_id").post(async (req, res) => {
-  const dbConnect = db.getDb();
-  const clinicId = toId(req.params.clinic_id);
-  const create = await Appointment.create({
-    customerName: req.body.customerName,
-    appointmentPlace: req.body.appointmentPlace,
-    appointmentDate: req.body.appointmentDate,
-    appointmentTime: req.body.appointmentTime,
-    phoneNumber: req.body.phoneNumber,
-    clinic_id: clinicId,
-    owner_id: req.body.owner_id
+appointmentRoutes
+  .route("/appointment/create/:clinic_id")
+  .post(async (req, res) => {
+    const dbConnect = db.getDb();
+    const clinicId = toId(req.params.clinic_id);
+    const create = await Appointment.create({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      nickname: req.body.nickname,
+      appointmentPlace: req.body.appointmentPlace,
+      appointmentDate: req.body.appointmentDate,
+      appointmentTime: req.body.appointmentTime,
+      phoneNumber: req.body.phoneNumber,
+      clinic_id: clinicId,
+      owner_id: req.body.owner_id,
+    });
+    dbConnect
+      .collection("appointmentDetails")
+      .insertOne(create, (err, result) => {
+        if (err) {
+          res.status(400).send("Error inserting appointment!");
+        } else {
+          return res.status(201).json(create);
+        }
+      });
   });
-  dbConnect.collection("appointmentDetails").insertOne(create, (err, result) => {
-    if (err) {
-      res.status(400).send("Error inserting appointment!");
-    } else {
-      return res.status(201).json(create);
-    }
-  });
-});
 
 // This section will help you update a document by id.
 appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
@@ -116,7 +116,9 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
   const appoinmentId = toId(req.params.id);
   const updates = {
     $set: {
-      customerName: req.body.customerName,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      nickname: req.body.nickname,
       date: req.body.date,
       phoneNumber: req.body.phoneNumber,
       dateStart: req.body.dateStart,

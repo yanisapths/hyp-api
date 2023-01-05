@@ -37,6 +37,7 @@ const AppointmentSchema = new Schema({
     type: String,
   },
   owner_id: { type: String, ref: "Clinic"},
+  course: { type: String },
   clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
   status: {
     type: String,

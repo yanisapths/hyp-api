@@ -1,4 +1,4 @@
-const {Schema,model} = require("mongoose");
+const { Schema, model } = require("mongoose");
 const uuid = require("uuid");
 
 const ClinicSchema = new Schema({
@@ -22,7 +22,7 @@ const ClinicSchema = new Schema({
       type: String,
     },
     required: false,
-    default:{},
+    default: {},
     coordinates: [],
   },
   owner: {
@@ -87,10 +87,11 @@ const ClinicSchema = new Schema({
   },
   reviews: [{ type: Schema.ObjectId, ref: "Review" }],
   appointmentList: [{ type: Schema.ObjectId, ref: "Appointment" }],
-  staffList: [{ type: Schema.ObjectId, ref: "Staff" }], 
+  staffList: [{ type: Schema.ObjectId, ref: "Staff" }],
   owner_id: {
     type: String,
   },
+  courses: [{ type: Schema.ObjectId, ref: "Course" }],
 });
 
 const Clinic = model("Clinic", ClinicSchema);

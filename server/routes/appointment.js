@@ -98,7 +98,7 @@ appointmentRoutes
       phoneNumber: req.body.phoneNumber,
       clinic_id: clinicId,
       owner_id: req.body.owner_id,
-      course: req.body.course
+      course: req.body.course,
     });
     dbConnect
       .collection("appointmentDetails")
@@ -126,7 +126,7 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
       appointmentTime: req.body.appointmentTime,
       clinic_id: req.body.clinic_id,
       status: req.body.status,
-      course: req.body.course
+      course: req.body.course,
     },
   };
   await dbConnect

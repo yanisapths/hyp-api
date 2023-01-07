@@ -29,20 +29,18 @@ courseRoutes.route("/course").get(async (req, res) => {
 });
 
 // Get course by id
-courseRoutes
-  .route("/course/:course_id")
-  .get(async (req, res) => {
-    const dbConnect = db.getDb();
-    try {
-      const course = await dbConnect
-        .collection("clinicCourseDetails")
-        .findOne(toId(req.params.course_id));
-      res.send(course);
-    } catch {
-      res.status(404);
-      res.send({ error: "course doesn't exist!" });
-    }
-  });
+courseRoutes.route("/course/:course_id").get(async (req, res) => {
+  const dbConnect = db.getDb();
+  try {
+    const course = await dbConnect
+      .collection("clinicCourseDetails")
+      .findOne(toId(req.params.course_id));
+    res.send(course);
+  } catch {
+    res.status(404);
+    res.send({ error: "course doesn't exist!" });
+  }
+});
 
 // Get course by clinic owner id
 courseRoutes
@@ -53,24 +51,38 @@ courseRoutes
     try {
       await dbConnect
         .collection("clinicCourseDetails")
-        .aggregate([
-          { $match: { 'owner_id': session_userId} 
-        }
-      ]).toArray( (err,result)=> {
-        res.send(result);
-      })
-  
+        .aggregate([{ $match: { owner_id: session_userId } }])
+        .toArray((err, result) => {
+          res.send(result);
+        });
     } catch {
       res.status(404);
-      res.send({ error: "Failed to fetch clinic's course"});
+      res.send({ error: "Failed to fetch clinic's course" });
     }
   });
+
+// Get course by clinic_id
+courseRoutes.route("/course/match/:clinic_id").get(async (req, res) => {
+  const dbConnect = db.getDb();
+  const clinicId = toId(req.params.clinic_id);
+  try {
+    await dbConnect
+      .collection("clinicCourseDetails")
+      .aggregate([{ $match: { clinic_id: new ObjectID(clinicId) } }])
+      .toArray((err, result) => {
+        res.send(result);
+      });
+  } catch {
+    res.status(404);
+    res.send({ error: "Failed to fetch clinic's courses" });
+  }
+});
 
 // This section will help you create a new document.
 courseRoutes.route("/course/create/:clinic_id").post(async (req, res) => {
   const dbConnect = db.getDb();
   const clinicId = toId(req.params.clinic_id);
-  const procedures =  req.body.procedures;
+  const procedures = req.body.procedures;
   const create = await Course.create({
     courseName: req.body.courseName,
     amount: req.body.amount,
@@ -80,13 +92,15 @@ courseRoutes.route("/course/create/:clinic_id").post(async (req, res) => {
     procedures: procedures,
     clinic_id: clinicId,
   });
-  dbConnect.collection("clinicCourseDetails").insertOne(create, (err, result) => {
-    if (err) {
-      res.status(400).send("Error inserting course!");
-    } else {
-      return res.status(201).json(create);
-    }
-  });
+  dbConnect
+    .collection("clinicCourseDetails")
+    .insertOne(create, (err, result) => {
+      if (err) {
+        res.status(400).send("Error inserting course!");
+      } else {
+        return res.status(201).json(create);
+      }
+    });
 });
 
 // This section will help you update a document by id.
@@ -95,10 +109,10 @@ courseRoutes.route("/course/update/:id").put(async (req, res) => {
   const courseId = toId(req.params.id);
   const updates = {
     $set: {
-        courseName: req.body.courseName,
-        amount: req.body.amount,
-        duration: req.body.duration,
-        totalPrice: req.body.totalPrice,
+      courseName: req.body.courseName,
+      amount: req.body.amount,
+      duration: req.body.duration,
+      totalPrice: req.body.totalPrice,
     },
   };
   await dbConnect

@@ -70,7 +70,7 @@ courseRoutes
 courseRoutes.route("/course/create/:clinic_id").post(async (req, res) => {
   const dbConnect = db.getDb();
   const clinicId = toId(req.params.clinic_id);
-  const procedures =  req.body.procedures.replace(/\s/g,'').split(",");
+  const procedures =  req.body.procedures;
   const create = await Course.create({
     courseName: req.body.courseName,
     amount: req.body.amount,

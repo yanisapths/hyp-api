@@ -113,6 +113,7 @@ courseRoutes.route("/course/update/:id").put(async (req, res) => {
       amount: req.body.amount,
       duration: req.body.duration,
       totalPrice: req.body.totalPrice,
+      procedures: req.body.procedures
     },
   };
   await dbConnect

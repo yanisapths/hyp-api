@@ -1,94 +1,94 @@
 const express = require("express");
-const { Schedule } = require("../models/ScheduleModel");
+const { Available } = require("../models/AvailableModel");
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 mongoose.set("strictQuery", false);
 
-// scheduleRoutes is an instance of the express router.
-const scheduleRoutes = express.Router();
+// availableRoutes is an instance of the express router.
+const availableRoutes = express.Router();
 // This will help us connect to the database
 const db = require("../db/conn");
 const { ObjectID } = require("bson");
 
 // Read
 // This section will help you get a list of all the documents.
-scheduleRoutes.route("/schedule").get(async (req, res) => {
+availableRoutes.route("/available").get(async (req, res) => {
   const dbConnect = db.getDb();
 
   dbConnect
-    .collection("scheduleSlot")
+    .collection("availableSlot")
     .find({})
     .limit(50)
     .toArray(function (err, result) {
       if (err) {
-        res.status(400).send("Error fetching schedules!");
+        res.status(400).send("Error fetching availables!");
       } else {
         res.json(result);
       }
     });
 });
 
-// Get schedule by id
-scheduleRoutes.route("/schedule/:schedule_id").get(async (req, res) => {
+// Get available by id
+availableRoutes.route("/available/:schedule_id").get(async (req, res) => {
   const dbConnect = db.getDb();
   try {
-    const schedule = await dbConnect
-      .collection("scheduleSlot")
+    const available = await dbConnect
+      .collection("availableSlot")
       .findOne(toId(req.params.schedule_id));
-    res.send(schedule);
+    res.send(available);
   } catch {
     res.status(404);
-    res.send({ error: "schedule doesn't exist!" });
+    res.send({ error: "available doesn't exist!" });
   }
 });
 
 // Get schedule by clinic id
-scheduleRoutes.route("/schedule/match/:clinic_id").get(async (req, res) => {
+availableRoutes.route("/available/match/:clinic_id").get(async (req, res) => {
   const dbConnect = db.getDb();
   const clinicId = toId(req.params.clinic_id);
   try {
     await dbConnect
-      .collection("scheduleSlot")
+      .collection("availableSlot")
       .aggregate([{ $match: { clinic_id: new ObjectID(clinicId) } }])
       .toArray((err, result) => {
         res.send(result);
       });
   } catch {
     res.status(404);
-    res.send({ error: "Failed to fetch clinic's schedule" });
+    res.send({ error: "Failed to fetch clinic's available" });
   }
 });
 
 // Get schedule by clinic owner's session
-scheduleRoutes
-  .route("/schedule/match/owner/:session_userId")
+availableRoutes
+  .route("/available/match/owner/:session_userId")
   .get(async (req, res) => {
     const dbConnect = db.getDb();
     const session_userId = req.params.session_userId;
     try {
       await dbConnect
-        .collection("scheduleSlot")
+        .collection("availableSlot")
         .aggregate([{ $match: { owner_id: session_userId } }])
         .toArray((err, result) => {
           res.send(result);
         });
     } catch {
       res.status(404);
-      res.send({ error: "Failed to fetch clinic's schedule" });
+      res.send({ error: "Failed to fetch clinic's available" });
     }
   });
 
 // This section will help you create a new document.
-scheduleRoutes.route("/schedule/create/:clinic_id").post(async (req, res) => {
+availableRoutes.route("/available/create/:clinic_id").post(async (req, res) => {
   const dbConnect = db.getDb();
   const clinicId = toId(req.params.clinic_id);
-  const create = await Schedule.create({
+  const create = await Available.create({
     ...req.body,
     clinic_id: clinicId,
   });
-  dbConnect.collection("scheduleSlot").insertOne(create, (err, result) => {
+  dbConnect.collection("availableSlot").insertOne(create, (err, result) => {
     if (err) {
-      res.status(400).send("Error inserting schedule!");
+      res.status(400).send("Error inserting available!");
     } else {
       return res.status(201).json(create);
     }
@@ -96,35 +96,35 @@ scheduleRoutes.route("/schedule/create/:clinic_id").post(async (req, res) => {
 });
 
 // This section will help you update a document by id.
-scheduleRoutes.route("/schedule/update/:id").put(async (req, res) => {
+availableRoutes.route("/available/update/:id").put(async (req, res) => {
   const dbConnect = db.getDb();
-  const scheduleId = toId(req.params.id);
+  const availableId = toId(req.params.id);
   const updates = {
     $set: {
       ...req.body,
     },
   };
   await dbConnect
-    .collection("scheduleSlot")
-    .updateOne({ _id: scheduleId }, updates, (err, _result) => {
+    .collection("availableSlot")
+    .updateOne({ _id: availableId }, updates, (err, _result) => {
       if (err) {
-        res.status(400).send(`Error updating on schedule!`);
+        res.status(400).send(`Error updating on available!`);
       } else {
         res.status(200).send(updates);
       }
     });
 });
 
-// This section will help you delete an schedule.
-scheduleRoutes.route("/schedule/delete/:id").delete(async (req, res) => {
+// This section will help you delete an available.
+availableRoutes.route("/available/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
-  const scheduleId = toId(req.params.id);
+  const availableId = toId(req.params.id);
   try {
-    await dbConnect.collection("scheduleSlot").deleteOne({ _id: scheduleId });
-    res.status(200).send("Schedule has been deleted!");
+    await dbConnect.collection("availableSlot").deleteOne({ _id: availableId });
+    res.status(200).send("available has been deleted!");
   } catch {
-    res.status(404).send({ error: "Schedule doesn't exist!" });
+    res.status(404).send({ error: "available doesn't exist!" });
   }
 });
 
-module.exports = scheduleRoutes;
+module.exports = availableRoutes;

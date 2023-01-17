@@ -1,8 +1,8 @@
 const {Schema,model} = require("mongoose");
 const uuid = require("uuid");
 
-const ScheduleSchema = new Schema({
-  schedule_id: {
+const AvailableSchema = new Schema({
+  available_id: {
     type: String,
     default: function genUUID() {
       return uuid.v1();
@@ -30,6 +30,6 @@ const ScheduleSchema = new Schema({
   appointment_id: { type: Schema.ObjectId, ref: "Appointment" },
 });
 
-const Schedule = model("Schedule", ScheduleSchema);
+const Available = model("Available", AvailableSchema);
 
-module.exports = { Schedule };
+module.exports = { Available };

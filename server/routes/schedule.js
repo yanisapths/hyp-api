@@ -42,7 +42,7 @@ scheduleRoutes.route("/schedule/:schedule_id").get(async (req, res) => {
   }
 });
 
-// Get Appointment by clinic id
+// Get schedule by clinic id
 scheduleRoutes.route("/schedule/match/:clinic_id").get(async (req, res) => {
   const dbConnect = db.getDb();
   const clinicId = toId(req.params.clinic_id);

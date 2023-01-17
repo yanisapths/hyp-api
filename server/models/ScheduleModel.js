@@ -2,22 +2,22 @@ const {Schema,model} = require("mongoose");
 const uuid = require("uuid");
 
 const ScheduleSchema = new Schema({
-  appointment_id: {
+  schedule_id: {
     type: String,
     default: function genUUID() {
       return uuid.v1();
     },
     required: true,
   },
-  created_At: {
+  availableDate: {
     type: Date,
-    default: Date.now,
-    required: true,
+    required: false,
   },
-  firstName: {
-    type: String,
+  endTime: {
+    type: Date,
+    required: false,
   },
-  Date: {
+  startTime: {
     type: Date,
     required: false,
   },

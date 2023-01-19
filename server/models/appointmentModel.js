@@ -1,4 +1,4 @@
-const {Schema,model} = require("mongoose");
+const { Schema, model } = require("mongoose");
 const uuid = require("uuid");
 
 const AppointmentSchema = new Schema({
@@ -41,7 +41,9 @@ const AppointmentSchema = new Schema({
     type: String,
     require: false,
   },
-  owner_id: { type: String, ref: "Clinic"},
+  rejectReason: { type: String, require: false },
+  tag: { type: String, require: false },
+  owner_id: { type: String, ref: "Clinic" },
   course: { type: String },
   clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
   status: {

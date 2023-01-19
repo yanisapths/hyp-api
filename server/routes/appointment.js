@@ -142,6 +142,49 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
     });
 });
 
+// Reject Request for appointment
+appointmentRoutes.route("/appointment/reject/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const appoinmentId = toId(req.params.id);
+  const updates = {
+    $set: {
+      status: req.body.status,
+      rejectReason: req.body.rejectReason,
+      tag: req.body.tag,
+    },
+  };
+  await dbConnect
+    .collection("appointmentDetails")
+    .updateOne({ _id: appoinmentId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error reject a request!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
+});
+
+// Accept Request for appointment
+appointmentRoutes.route("/appointment/accept/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const appoinmentId = toId(req.params.id);
+  const updates = {
+    $set: {
+      status: req.body.status,
+    },
+  };
+  await dbConnect
+    .collection("appointmentDetails")
+    .updateOne({ _id: appoinmentId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error accept a request!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
+});
+
+
 // This section will help you delete an appointment.
 appointmentRoutes.route("/appointment/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();

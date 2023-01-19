@@ -82,6 +82,26 @@ appointmentRoutes
     }
   });
 
+appointmentRoutes
+  .route("/appointment/match/owner/:session_userId/approved")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const session_userId = req.params.session_userId;
+    try {
+      await dbConnect
+        .collection("appointmentDetails")
+        .aggregate([
+          { $match: { owner_id: session_userId, status: "Approved" } },
+        ])
+        .toArray((err, result) => {
+          res.send(result);
+        });
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch clinic's appoinments" });
+    }
+  });
+
 // This section will help you create a new document.
 appointmentRoutes
   .route("/appointment/create/:clinic_id")
@@ -99,7 +119,7 @@ appointmentRoutes
       clinic_id: clinicId,
       owner_id: req.body.owner_id,
       course: req.body.course,
-      location: req.body.location
+      location: req.body.location,
     });
     dbConnect
       .collection("appointmentDetails")
@@ -128,7 +148,7 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
       clinic_id: req.body.clinic_id,
       status: req.body.status,
       course: req.body.course,
-      location: req.body.location
+      location: req.body.location,
     },
   };
   await dbConnect
@@ -183,7 +203,6 @@ appointmentRoutes.route("/appointment/accept/:id").put(async (req, res) => {
       }
     });
 });
-
 
 // This section will help you delete an appointment.
 appointmentRoutes.route("/appointment/delete/:id").delete(async (req, res) => {

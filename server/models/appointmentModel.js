@@ -34,6 +34,11 @@ const AppointmentSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  endTime: {
+    type: Date,
+    default: Date.now,
+    require: false 
+  },
   phoneNumber: {
     type: String,
   },

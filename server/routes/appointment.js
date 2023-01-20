@@ -115,6 +115,7 @@ appointmentRoutes
       appointmentPlace: req.body.appointmentPlace,
       appointmentDate: req.body.appointmentDate,
       appointmentTime: req.body.appointmentTime,
+      endTime: req.body.endTime,
       phoneNumber: req.body.phoneNumber,
       clinic_id: clinicId,
       owner_id: req.body.owner_id,

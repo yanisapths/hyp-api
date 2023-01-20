@@ -102,6 +102,27 @@ appointmentRoutes
     }
   });
 
+appointmentRoutes
+  .route("/appointment/match/owner/:session_userId/pending")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const session_userId = req.params.session_userId;
+    try {
+      await dbConnect
+        .collection("appointmentDetails")
+        .aggregate([
+          { $match: { owner_id: session_userId, status: "pending" } },
+        ])
+        .toArray((err, result) => {
+          res.send(result);
+        });
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch clinic's appoinments" });
+    }
+  });
+
+
 // This section will help you create a new document.
 appointmentRoutes
   .route("/appointment/create/:clinic_id")

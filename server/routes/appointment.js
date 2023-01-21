@@ -82,6 +82,24 @@ appointmentRoutes
     }
   });
 
+  appointmentRoutes
+  .route("/appointment/match/customer/:customer_id")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const customer_id = req.params.customer_id;
+    try {
+      await dbConnect
+        .collection("appointmentDetails")
+        .aggregate([{ $match: { owner_id: customer_id } }])
+        .toArray((err, result) => {
+          res.send(result);
+        });
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch clinic's appoinments" });
+    }
+});
+
 appointmentRoutes
   .route("/appointment/match/owner/:session_userId/approved")
   .get(async (req, res) => {

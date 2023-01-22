@@ -82,7 +82,7 @@ appointmentRoutes
     }
   });
 
-  appointmentRoutes
+appointmentRoutes
   .route("/appointment/match/customer/:customer_id")
   .get(async (req, res) => {
     const dbConnect = db.getDb();
@@ -90,7 +90,7 @@ appointmentRoutes
     try {
       await dbConnect
         .collection("appointmentDetails")
-        .aggregate([{ $match: { owner_id: customer_id } }])
+        .aggregate([{ $match: { customer_id: customer_id } }])
         .toArray((err, result) => {
           res.send(result);
         });
@@ -135,6 +135,7 @@ appointmentRoutes
       appointmentTime: req.body.appointmentTime,
       phoneNumber: req.body.phoneNumber,
       clinic_id: clinicId,
+      customer_id: req.body.customer_id,
       owner_id: req.body.owner_id,
       course: req.body.course,
       location: req.body.location,

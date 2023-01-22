@@ -157,9 +157,10 @@ appointmentRoutes
       endTime: req.body.endTime,
       phoneNumber: req.body.phoneNumber,
       clinic_id: clinicId,
+      clinicName: req.body.clinicName,
       customer_id: req.body.customer_id,
       owner_id: req.body.owner_id,
-      course: req.body.course,
+      course_id: req.body.course_id,
       location: req.body.location,
     });
     dbConnect

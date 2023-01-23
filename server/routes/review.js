@@ -2,6 +2,7 @@ const express = require("express");
 const { Review } = require("../models/reviewModel")
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
+mongoose.set("strictQuery", false);
 
 // reviewRoutes is an instance of the express router.
 const reviewRoutes = express.Router();
@@ -67,6 +68,25 @@ reviewRoutes.route("/review/:review_id").get(async (req, res) => {
 reviewRoutes.route("/review/create").post(async (req, res) => {
   const dbConnect = db.getDb();
  const create = await Review.create(req.body);
+  dbConnect.collection("daycareReviews").insertOne(create, (err, result) => {
+    if (err) {
+      res.status(400).send("Error inserting review!");
+    } else {
+      return res.status(201).json(create);
+    }
+  });
+});
+
+reviewRoutes.route("/review/create/:clinic_id").post(async (req, res) => {
+  const dbConnect = db.getDb();
+  const clinicId = toId(req.params.clinic_id);
+ const create = await Review.create({
+  clinic_id: clinicId,
+  comments: req.body.comments,
+  score: req.body.score,
+  customerName: req.body.customerName,
+  status: req.body.status,
+  });
   dbConnect.collection("daycareReviews").insertOne(create, (err, result) => {
     if (err) {
       res.status(400).send("Error inserting review!");

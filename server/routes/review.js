@@ -3,6 +3,7 @@ const { Review } = require("../models/reviewModel")
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 mongoose.set("strictQuery", false);
+const { ObjectID } = require("bson");
 
 // reviewRoutes is an instance of the express router.
 const reviewRoutes = express.Router();
@@ -29,21 +30,16 @@ reviewRoutes.route("/review").get(async function (req, res) {
 });
 
   // Get Review by clinic id
-  reviewRoutes
-  .route("/review/match/:id")
-  .get(async (req, res) => {
+reviewRoutes.route("/review/match/:clinic_id").get(async (req, res) => {
     const dbConnect = db.getDb();
-    const clinicId = toId(req.params.id);
+    const clinicId = toId(req.params.clinic_id);
     try {
       await dbConnect
         .collection("daycareReviews")
-        .aggregate([
-          { $match: { 'clinic_id': new ObjectID(clinicId)} 
-        }
-      ]).toArray( (err , result) => {
-        res.send(result);
-      })
-  
+        .aggregate([{ $match: { clinic_id: new ObjectID(clinicId) }}])
+        .toArray((err, result) => {
+          res.send(result);
+        });
     } catch {
       res.status(404);
       res.send({ error: "Failed to fetch clinic's reviews"});
@@ -62,19 +58,6 @@ reviewRoutes.route("/review/:review_id").get(async (req, res) => {
     res.status(404);
     res.send({ error: "Review doesn't exist!" });
   }
-});
-
-// This section will help you create a new document.
-reviewRoutes.route("/review/create").post(async (req, res) => {
-  const dbConnect = db.getDb();
- const create = await Review.create(req.body);
-  dbConnect.collection("daycareReviews").insertOne(create, (err, result) => {
-    if (err) {
-      res.status(400).send("Error inserting review!");
-    } else {
-      return res.status(201).json(create);
-    }
-  });
 });
 
 reviewRoutes.route("/review/create/:clinic_id").post(async (req, res) => {

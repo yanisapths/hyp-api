@@ -82,7 +82,7 @@ patientRoutes.route("/patient/update/:id").put(async (req, res) => {
   const patientId = toId(req.params.id);
   const updates = {
     $set: {
-      comments: req.body.comments,
+        ...req.body,   
     },
   };
   await dbConnect

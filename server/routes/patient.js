@@ -1,15 +1,44 @@
 const express = require("express");
 const { Patient } = require("../models/patientModel");
 const mongoose = require("mongoose");
+const multer = require("multer");
 const toId = mongoose.Types.ObjectId;
 mongoose.set("strictQuery", false);
 const { ObjectID } = require("bson");
+const uuidv4 = require("uuid");
 
 // patientRoutes is an instance of the express router.
 const patientRoutes = express.Router();
 
 // This will help us connect to the database
 const db = require("../db/conn");
+const DIR = "./public/";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, DIR);
+  },
+  filename: (req, file, cb) => {
+    const fileName = file.originalname.toLowerCase().split(" ").join("-");
+    cb(null, fileName);
+  },
+});
+
+var upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
+    }
+  },
+});
 
 // Read
 // This section will help you get a list of all the documents.
@@ -30,13 +59,13 @@ patientRoutes.route("/patient").get(async function (req, res) {
 });
 
 // Get Patient by clinic id
-patientRoutes.route("/patient/match/:clinic_id").get(async (req, res) => {
+patientRoutes.route("/patient/match/:owner_id").get(async (req, res) => {
   const dbConnect = db.getDb();
   const clinicId = toId(req.params.clinic_id);
   try {
     await dbConnect
       .collection("clinicPatient")
-      .aggregate([{ $match: { clinic_id: new ObjectID(clinicId) } }])
+      .aggregate([{ $match: { owner_id: req.params.owner_id } }])
       .toArray((err, result) => {
         res.send(result);
       });
@@ -60,21 +89,23 @@ patientRoutes.route("/patient/:patient_id").get(async (req, res) => {
   }
 });
 
-patientRoutes.route("/patient/create/:clinic_id").post(async (req, res) => {
-  const dbConnect = db.getDb();
-  const clinicId = toId(req.params.clinic_id);
-  const create = await Patient.create({
-    ...req.body,
-    clinic_id: clinicId,
+patientRoutes
+  .route("/patient/create/:owner_id")
+  .post(upload.single("document"), async (req, res) => {
+    const url = req.protocol + "://" + req.get("host");
+    const dbConnect = db.getDb();
+    const create = await Patient.create({
+      ...req.body,
+      document: url + "/public/" + req.body.document,
+    });
+    dbConnect.collection("clinicPatient").insertOne(create, (err, result) => {
+      if (err) {
+        res.status(400).send("Error inserting patient!");
+      } else {
+        return res.status(201).json(create);
+      }
+    });
   });
-  dbConnect.collection("clinicPatient").insertOne(create, (err, result) => {
-    if (err) {
-      res.status(400).send("Error inserting patient!");
-    } else {
-      return res.status(201).json(create);
-    }
-  });
-});
 
 // This section will help you update a document by id.
 patientRoutes.route("/patient/update/:id").put(async (req, res) => {
@@ -82,7 +113,7 @@ patientRoutes.route("/patient/update/:id").put(async (req, res) => {
   const patientId = toId(req.params.id);
   const updates = {
     $set: {
-        ...req.body,   
+      ...req.body,
     },
   };
   await dbConnect

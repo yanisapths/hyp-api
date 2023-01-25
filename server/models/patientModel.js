@@ -1,14 +1,15 @@
 const { Schema, model } = require("mongoose");
 const uuid = require("uuid");
 
-const PatientSchema = new Schema({
-  patient_id: {
-    type: String,
-    default: function genUUID() {
-      return uuid.v1();
+const PatientSchema = new Schema(
+  {
+    patient_id: {
+      type: String,
+      default: function genUUID() {
+        return uuid.v1();
+      },
+      required: true,
     },
-    required: true,
-  },
   HN: {
     type: String,
     require: false,

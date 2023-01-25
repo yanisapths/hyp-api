@@ -11,36 +11,51 @@ const PatientSchema = new Schema({
   },
   HN: {
     type: String,
+    require: false,
   },
   firstName: {
     type: String,
+    require: false,
   },
   lastName: {
     type: String,
+    require: false,
   },
   nickName: {
     type: String,
+    require: false,
+  },
+  lineId: {
+    type: String,
+    require: false,
   },
   phoneNumber: {
     type: String,
+    require: false,
   },
   age:{
     type: String,
+    require: false,
   },
   sex:{
     type: String,
+    require: false,
   },
   occupation:{
     type: String,
+    require: false,
   },
   position:{
     type: String,
+    require: false,
   },
   education:{
     type: String,
+    require: false,
   },
   income:{
     type: String,
+    require: false,
   },
   address: {
     type: String,
@@ -62,6 +77,7 @@ const PatientSchema = new Schema({
     type: String,
     require: false,
   },
+  owner_id: { type: String, ref: "Clinic"},
   clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
 },
 {

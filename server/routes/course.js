@@ -91,6 +91,7 @@ courseRoutes.route("/course/create/:clinic_id").post(async (req, res) => {
     owner_id: req.body.owner_id,
     procedures: procedures,
     clinic_id: clinicId,
+    type: req.body.type
   });
   dbConnect
     .collection("clinicCourseDetails")
@@ -113,7 +114,8 @@ courseRoutes.route("/course/update/:id").put(async (req, res) => {
       amount: req.body.amount,
       duration: req.body.duration,
       totalPrice: req.body.totalPrice,
-      procedures: req.body.procedures
+      procedures: req.body.procedures,
+      type: req.body.type
     },
   };
   await dbConnect

@@ -36,6 +36,7 @@ const CourseSchema = new Schema({
     type: String,
     required: false,
   },
+  type: [{type: String,}],
   procedures: [ProcedureSchema],
   owner_id: { type: String, ref: "Clinic"},
   clinic_id: { type: Schema.ObjectId, ref: "Clinic" },

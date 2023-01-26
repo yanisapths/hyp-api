@@ -9,36 +9,45 @@ const StaffSchema = new Schema({
     },
     required: true,
   },
-  created_At: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
-  staffName: {
+  firstName: {
     type: String,
-    required: false,
+    require: false,
+  },
+  lastName: {
+    type: String,
+    require: false,
+  },
+  nickName: {
+    type: String,
+    require: false,
+  },
+  lineId: {
+    type: String,
+    require: false,
   },
   phoneNumber: {
     type: String,
-    required: false,
+    require: false,
   },
-  clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
+  age:{
+    type: String,
+    require: false,
+  },
+  sex:{
+    type: String,
+    require: false,
+  },
   position: {
     type: String,
     required: false,
   },
-  expertArea: {
+  clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
+  owner_id: { type: String, ref: "Clinic"},
+  staffImage: {
     type: String,
-    required: false,
   },
-  professionalLicense: {
-    type: String,
-    required: false,
-  },
-  staffImageUrl: {
-    type: String,
-    required: false,
-  },
+},{
+  timestamps: true
 });
 
 const Staff = model("Staff", StaffSchema);

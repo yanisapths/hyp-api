@@ -9,11 +9,6 @@ const AppointmentSchema = new Schema({
     },
     required: true,
   },
-  created_At: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
   customer_id: {
     type: String,
   },
@@ -49,16 +44,31 @@ const AppointmentSchema = new Schema({
     type: String,
     require: false,
   },
+  lineId: {
+    type: String,
+    require: false,
+  },
+  sex: {
+    type: String,
+    require: false,
+  },
+  age: {
+    type: String,
+    require: false,
+  },
   rejectReason: { type: String, require: false },
   tag: { type: String, require: false },
   owner_id: { type: String, ref: "Clinic" },
   course_id: { type: String, ref: "Course" },
   clinicName: { type: String },
   clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
+  patient_id: { type: Schema.ObjectId, ref: "Patient" },
   status: {
     type: String,
     default: "pending",
   },
+},{
+  timestamps: true
 });
 
 const Appointment = model("Appointment", AppointmentSchema);

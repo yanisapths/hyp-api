@@ -151,6 +151,7 @@ appointmentRoutes
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       nickname: req.body.nickname,
+      age: req.body.age,
       appointmentPlace: req.body.appointmentPlace,
       appointmentDate: req.body.appointmentDate,
       appointmentTime: req.body.appointmentTime,
@@ -162,6 +163,10 @@ appointmentRoutes
       owner_id: req.body.owner_id,
       course_id: req.body.course_id,
       location: req.body.location,
+      patient_id: toId(req.body.patient_id),
+      status: req.body.status,
+      lineId: req.body.lineId,
+      sex: req.body.sex
     });
     dbConnect
       .collection("appointmentDetails")

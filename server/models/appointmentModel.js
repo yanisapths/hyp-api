@@ -18,7 +18,7 @@ const AppointmentSchema = new Schema({
   lastName: {
     type: String,
   },
-  nickname: {
+  nickName: {
     type: String,
   },
   appointmentPlace: {

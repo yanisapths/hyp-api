@@ -147,36 +147,21 @@ appointmentRoutes
   .post(async (req, res) => {
     const dbConnect = db.getDb();
     const clinicId = toId(req.params.clinic_id);
+  
     const create = await Appointment.create({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      nickname: req.body.nickname,
-      age: req.body.age,
-      appointmentPlace: req.body.appointmentPlace,
-      appointmentDate: req.body.appointmentDate,
-      appointmentTime: req.body.appointmentTime,
-      endTime: req.body.endTime,
-      phoneNumber: req.body.phoneNumber,
+      ...req.body,
       clinic_id: clinicId,
-      clinicName: req.body.clinicName,
-      customer_id: req.body.customer_id,
-      owner_id: req.body.owner_id,
-      course_id: req.body.course_id,
-      location: req.body.location,
-      patient_id: toId(req.body.patient_id),
-      status: req.body.status,
-      lineId: req.body.lineId,
-      sex: req.body.sex
     });
     dbConnect
-      .collection("appointmentDetails")
-      .insertOne(create, (err, result) => {
-        if (err) {
-          res.status(400).send("Error inserting appointment!");
-        } else {
-          return res.status(201).json(create);
-        }
-      });
+    .collection("appointmentDetails")
+    .insertOne(create, (err, result) => {
+      if (err) {
+        res.status(400).send("Error inserting appointment!");
+      } else {
+        return res.status(201).json(create);
+      }
+    });
+    
   });
 
 // This section will help you update a document by id.

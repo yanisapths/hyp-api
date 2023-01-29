@@ -2,6 +2,8 @@ const express = require("express");
 const { Clinic } = require("../models/clinicModel");
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
+const { ObjectID } = require("bson");
+mongoose.set("strictQuery", false);
 
 // clinicRoutes is an instance of the express router.
 const clinicRoutes = express.Router();
@@ -107,6 +109,26 @@ clinicRoutes.route("/clinic/update/:id").put(async (req, res) => {
       }
     }
   );
+});
+
+/// Authorized Clinic by Olive Approver ///
+clinicRoutes.route("/clinic/approve/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const updates = {
+    $set: {
+      approvalStatus: req.body.approvalStatus,
+    },
+  };
+  const clinicId = toId(req.params.id);
+  await dbConnect
+    .collection("daycareDetails")
+    .updateOne({ _id: clinicId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error approving clinic!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
 });
 
 // This section will help you delete a clinic.

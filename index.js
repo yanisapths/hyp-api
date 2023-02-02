@@ -61,8 +61,4 @@ db.connectToServer(function (err) {
   });
 });
 
-exports.handler = async (event, context) => {
-  context.callbackWaitsForEmptyEventLoop = false;
-  const server = awsServerlessExpress.createServer(app);
-  return awsServerlessExpress.proxy(server, event, context, "PROMISE").promise;
-};
+module.exports = app;

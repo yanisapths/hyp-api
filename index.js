@@ -1,5 +1,5 @@
 // Loads the configuration from config.env to process.env
-require("dotenv").config({ path: "config.env" });
+require("dotenv").config({ path: ".env" });
 const mongoose = require("mongoose");
 const express = require("express");
 var cors = require("cors");

@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const express = require("express");
 var cors = require("cors");
 const bodyParser = require("body-parser");
+const awsServerlessExpress = require("aws-serverless-express");
+
 var app = express();
 app.use(express.json());
 app.use(cors());

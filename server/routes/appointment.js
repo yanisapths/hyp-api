@@ -98,7 +98,7 @@ appointmentRoutes
       res.status(404);
       res.send({ error: "Failed to fetch clinic's appoinments" });
     }
-});
+  });
 
 appointmentRoutes
   .route("/appointment/match/owner/:session_userId/approved")
@@ -140,28 +140,26 @@ appointmentRoutes
     }
   });
 
-
 // This section will help you create a new document.
 appointmentRoutes
   .route("/appointment/create/:clinic_id")
   .post(async (req, res) => {
     const dbConnect = db.getDb();
     const clinicId = toId(req.params.clinic_id);
-  
+
     const create = await Appointment.create({
       ...req.body,
       clinic_id: clinicId,
     });
     dbConnect
-    .collection("appointmentDetails")
-    .insertOne(create, (err, result) => {
-      if (err) {
-        res.status(400).send("Error inserting appointment!");
-      } else {
-        return res.status(201).json(create);
-      }
-    });
-    
+      .collection("appointmentDetails")
+      .insertOne(create, (err, result) => {
+        if (err) {
+          res.status(400).send("Error inserting appointment!");
+        } else {
+          return res.status(201).json(create);
+        }
+      });
   });
 
 // This section will help you update a document by id.
@@ -248,6 +246,26 @@ appointmentRoutes.route("/appointment/delete/:id").delete(async (req, res) => {
   } catch {
     res.status(404).send({ error: "Appointment doesn't exist!" });
   }
+});
+
+// Events
+appointmentRoutes.route("/appointment/event/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const appoinmentId = toId(req.params.id);
+  const updates = {
+    $set: {
+      events: req.body.events,
+    },
+  };
+  await dbConnect
+    .collection("appointmentDetails")
+    .updateOne({ _id: appoinmentId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error updating on appointment!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
 });
 
 module.exports = appointmentRoutes;

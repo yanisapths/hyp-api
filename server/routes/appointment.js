@@ -249,7 +249,7 @@ appointmentRoutes.route("/appointment/delete/:id").delete(async (req, res) => {
 });
 
 // Events
-appointmentRoutes.route("/appointment/event/:id").put(async (req, res) => {
+appointmentRoutes.route("/appointment/event/:id").post(async (req, res) => {
   const dbConnect = db.getDb();
   const appoinmentId = toId(req.params.id);
   const updates = {
@@ -259,7 +259,10 @@ appointmentRoutes.route("/appointment/event/:id").put(async (req, res) => {
   };
   await dbConnect
     .collection("appointmentDetails")
-    .updateOne({ _id: appoinmentId }, updates, (err, _result) => {
+    .updateOne({ _id: appoinmentId }, updates, {
+      upsert: true,
+      runValidators: true
+    }, (err, _result) => {
       if (err) {
         res.status(400).send(`Error updating on appointment!`);
       } else {

@@ -1,33 +1,34 @@
 const { Schema, model, mongoose } = require("mongoose");
 const uuid = require("uuid");
 
-const EventSchema = mongoose.Schema(
-  {
-    event: {
-      type: String,
-      required: false,
-    },
-    date: {
-      type: Date,
-      required: false,
-    },
-    startTime: {
-      type: Date,
-      required: false,
-    },
-    endTime: {
-      type: Date,
-      required: false,
-    },
-    status: {
-      type: String,
-      required: false,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+// const EventSchema = mongoose.Schema(
+//   {
+//     event: {
+//       type: Number,
+//       required: false,
+//     },
+//     date: {
+//       type: Date,
+//       required: false,
+//     },
+//     startTime: {
+//       type: Date,
+//       required: false,
+//     },
+//     endTime: {
+//       type: Date,
+//       required: false,
+//     },
+//     status: {
+//       type: String,
+//       required: false,
+//       default: "Approved",
+//     },
+//   },
+//   {
+//     timestamps: true,
+//   }
+// );
 
 const AppointmentSchema = new Schema(
   {
@@ -96,7 +97,7 @@ const AppointmentSchema = new Schema(
       type: String,
       default: "pending",
     },
-    events: [EventSchema],
+    events: [{ type: Schema.ObjectId, ref: "Event" }],
   },
   {
     timestamps: true,

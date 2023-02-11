@@ -102,7 +102,7 @@ eventRoutes.route("/event/update/:id").put(async (req, res) => {
   const eventId = toId(req.params.id);
   const updates = {
     $set: {
-    
+      status: req.body.status,
     },
   };
   await dbConnect

@@ -179,6 +179,7 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
       status: req.body.status,
       course: req.body.course,
       location: req.body.location,
+      progressStatus: req.body.progressStatus,
     },
   };
   await dbConnect
@@ -221,6 +222,27 @@ appointmentRoutes.route("/appointment/accept/:id").put(async (req, res) => {
   const updates = {
     $set: {
       status: req.body.status,
+    },
+  };
+  await dbConnect
+    .collection("appointmentDetails")
+    .updateOne({ _id: appoinmentId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error accept a request!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
+});
+
+
+// Accept Request for appointment
+appointmentRoutes.route("/appointment/markdone/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const appoinmentId = toId(req.params.id);
+  const updates = {
+    $set: {
+      progressStatus: req.body.progressStatus,
     },
   };
   await dbConnect

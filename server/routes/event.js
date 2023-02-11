@@ -46,6 +46,26 @@ eventRoutes.route("/event/match/:appointment_id").get(async (req, res) => {
     }
   });
 
+eventRoutes
+  .route("/event/match/owner/:session_userId")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const session_userId = req.params.session_userId;
+    try {
+      await dbConnect
+        .collection("appointmentEvent")
+        .aggregate([
+          { $match: { owner_id: session_userId } },
+        ])
+        .toArray((err, result) => {
+          res.send(result);
+        });
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch clinic's events" });
+    }
+  });
+
 // Get Event by id
 eventRoutes.route("/event/:event_id").get(async (req, res) => {
   const dbConnect = db.getDb();

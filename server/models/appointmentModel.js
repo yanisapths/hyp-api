@@ -93,6 +93,7 @@ const AppointmentSchema = new Schema(
     clinicName: { type: String },
     clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
     patient_id: { type: String, ref: "Patient" },
+    staff: { type: String, ref: "Staff" },
     status: {
       type: String,
       default: "pending",

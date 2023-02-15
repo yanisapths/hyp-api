@@ -26,6 +26,7 @@ const EventSchema = new Schema(
       default: "Approved",
     },
     owner_id: { type: String, ref: "Clinic" },
+    patient_id: { type: String, ref: "Patient" },
   },
   {
     timestamps: true,

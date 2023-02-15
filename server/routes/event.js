@@ -52,7 +52,7 @@ eventRoutes
     const session_userId = req.params.session_userId;
     try {
       await dbConnect
-        .collection("appointmentDetails")
+        .collection("appointmentEvent")
         .aggregate([
           { $match: { owner_id: session_userId, status: "pending" } },
         ])

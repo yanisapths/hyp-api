@@ -54,7 +54,7 @@ eventRoutes
       await dbConnect
         .collection("appointmentEvent")
         .aggregate([
-          { $match: { owner_id: session_userId, status: "pending" } },
+          { $match: { owner_id: session_userId } },
         ])
         .toArray((err, result) => {
           res.send(result);

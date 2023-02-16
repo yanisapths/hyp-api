@@ -100,7 +100,9 @@ eventRoutes.route("/event/update/:id").put(async (req, res) => {
   const dbConnect = db.getDb();
   const eventId = toId(req.params.id);
   const updates = {
-    $set: {},
+    $set: {
+      status: req.body.status,
+    },
   };
   await dbConnect
     .collection("appointmentEvent")

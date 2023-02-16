@@ -1,5 +1,5 @@
 const express = require("express");
-const { Event } = require("../models/eventModel")
+const { Event } = require("../models/eventModel");
 const mongoose = require("mongoose");
 const toId = mongoose.Types.ObjectId;
 mongoose.set("strictQuery", false);
@@ -29,20 +29,39 @@ eventRoutes.route("/event").get(async function (req, res) {
     });
 });
 
-
 eventRoutes.route("/event/match/:appointment_id").get(async (req, res) => {
+  const dbConnect = db.getDb();
+  const appointmentId = toId(req.params.appointment_id);
+  try {
+    await dbConnect
+      .collection("appointmentEvent")
+      .aggregate([{ $match: { appointment_id: new ObjectID(appointmentId) } }])
+      .toArray((err, result) => {
+        res.send(result);
+      });
+  } catch {
+    res.status(404);
+    res.send({ error: "Failed to fetch" });
+  }
+});
+
+eventRoutes
+  .route("/event/match/owner/:session_userId")
+  .get(async (req, res) => {
     const dbConnect = db.getDb();
-    const appointmentId = toId(req.params.appointment_id);
+    const session_userId = req.params.session_userId;
     try {
       await dbConnect
         .collection("appointmentEvent")
-        .aggregate([{ $match: { appointment_id: new ObjectID(appointmentId) }}])
+        .aggregate([
+          { $match: { owner_id: session_userId } },
+        ])
         .toArray((err, result) => {
           res.send(result);
         });
     } catch {
       res.status(404);
-      res.send({ error: "Failed to fetch"});
+      res.send({ error: "Failed to fetch clinic's events" });
     }
   });
 
@@ -83,9 +102,9 @@ eventRoutes.route("/event/:event_id").get(async (req, res) => {
 eventRoutes.route("/event/create/:appointment_id").post(async (req, res) => {
   const dbConnect = db.getDb();
   const appointmentId = toId(req.params.appointment_id);
- const create = await Event.create({
-  appointment_id: appointmentId,
-  ...req.body
+  const create = await Event.create({
+    appointment_id: appointmentId,
+    ...req.body,
   });
   dbConnect.collection("appointmentEvent").insertOne(create, (err, result) => {
     if (err) {
@@ -121,9 +140,7 @@ eventRoutes.route("/event/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();
   const eventId = toId(req.params.id);
   try {
-    await dbConnect
-      .collection("appointmentEvent")
-      .deleteOne({ _id: eventId });
+    await dbConnect.collection("appointmentEvent").deleteOne({ _id: eventId });
     res.status(200).send("Event has been deleted!");
   } catch {
     res.status(404).send({ error: "Event doesn't exist!" });

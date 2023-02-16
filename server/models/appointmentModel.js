@@ -98,6 +98,9 @@ const AppointmentSchema = new Schema(
       type: String,
       default: "pending",
     },
+    progressStatus: {
+      type: String,
+    },
     events: [{ type: Schema.ObjectId, ref: "Event" }],
   },
   {

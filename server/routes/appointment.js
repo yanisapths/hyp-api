@@ -248,6 +248,27 @@ appointmentRoutes.route("/appointment/delete/:id").delete(async (req, res) => {
   }
 });
 
+// Accept Request for appointment
+appointmentRoutes.route("/appointment/markdone/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const appoinmentId = toId(req.params.id);
+  const updates = {
+    $set: {
+      progressStatus: req.body.progressStatus,
+    },
+  };
+  await dbConnect
+    .collection("appointmentDetails")
+    .updateOne({ _id: appoinmentId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error accept a request!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
+});
+
+
 // Events
 appointmentRoutes.route("/appointment/event/:id").post(async (req, res) => {
   const dbConnect = db.getDb();

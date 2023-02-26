@@ -89,6 +89,24 @@ patientRoutes.route("/patient/:patient_id").get(async (req, res) => {
   }
 });
 
+// Get patient by clinic_id
+patientRoutes.route("/patient/match/clinic/:clinic_id").get(async (req, res) => {
+  const dbConnect = db.getDb();
+  const clinicId = toId(req.params.clinic_id);
+  try {
+    await dbConnect
+      .collection("clinicPatient")
+      .aggregate([{ $match: { clinic_id: new ObjectID(clinicId) } }])
+      .toArray((err, result) => {
+        res.send(result);
+      });
+  } catch {
+    res.status(404);
+    res.send({ error: "Failed to fetch clinic's patient" });
+  }
+});
+
+
 patientRoutes
   .route("/patient/create/:owner_id")
   .post(upload.single("document"), async (req, res) => {

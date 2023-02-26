@@ -150,7 +150,7 @@ clinicRoutes.route("/clinic/owner/:owner_id").get(async (req, res) => {
   try {
     const clinic = await dbConnect
       .collection("daycareDetails")
-      .findOne({ owner_id });
+      .findOne({ owner_id: owner_id });
     res.send(clinic);
   } catch {
     res.status(404);

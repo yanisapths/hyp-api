@@ -99,7 +99,45 @@ appointmentRoutes
       res.send({ error: "Failed to fetch clinic's appoinments" });
     }
   });
+appointmentRoutes
+  .route("/appointment/match/:clinic_id/approved")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const clinicId = toId(req.params.clinic_id);
+    try {
+      await dbConnect
+        .collection("appointmentDetails")
+        .aggregate([
+          { $match: { clinic_id: new ObjectID(clinicId), status: "Approved" } },
+        ])
+        .toArray((err, result) => {
+          res.send(result);
+        });
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch clinic's appoinments" });
+    }
+  });
 
+appointmentRoutes
+  .route("/appointment/match/:clinic_id/pending")
+  .get(async (req, res) => {
+    const dbConnect = db.getDb();
+    const clinicId = toId(req.params.clinic_id);
+    try {
+      await dbConnect
+        .collection("appointmentDetails")
+        .aggregate([
+          { $match: { clinic_id: new ObjectID(clinicId), status: "pending" } },
+        ])
+        .toArray((err, result) => {
+          res.send(result);
+        });
+    } catch {
+      res.status(404);
+      res.send({ error: "Failed to fetch clinic's appoinments" });
+    }
+  });
 appointmentRoutes
   .route("/appointment/match/owner/:session_userId/approved")
   .get(async (req, res) => {
@@ -235,7 +273,6 @@ appointmentRoutes.route("/appointment/accept/:id").put(async (req, res) => {
     });
 });
 
-
 // Accept Request for appointment
 appointmentRoutes.route("/appointment/markdone/:id").put(async (req, res) => {
   const dbConnect = db.getDb();
@@ -290,7 +327,6 @@ appointmentRoutes.route("/appointment/markdone/:id").put(async (req, res) => {
     });
 });
 
-
 // Events
 appointmentRoutes.route("/appointment/event/:id").post(async (req, res) => {
   const dbConnect = db.getDb();
@@ -300,18 +336,21 @@ appointmentRoutes.route("/appointment/event/:id").post(async (req, res) => {
       events: req.body.events,
     },
   };
-  await dbConnect
-    .collection("appointmentDetails")
-    .updateOne({ _id: appoinmentId }, updates, {
+  await dbConnect.collection("appointmentDetails").updateOne(
+    { _id: appoinmentId },
+    updates,
+    {
       upsert: true,
-      runValidators: true
-    }, (err, _result) => {
+      runValidators: true,
+    },
+    (err, _result) => {
       if (err) {
         res.status(400).send(`Error updating on appointment!`);
       } else {
         res.status(200).send(updates);
       }
-    });
+    }
+  );
 });
 
 module.exports = appointmentRoutes;

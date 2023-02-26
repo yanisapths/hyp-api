@@ -53,9 +53,7 @@ eventRoutes
     try {
       await dbConnect
         .collection("appointmentEvent")
-        .aggregate([
-          { $match: { owner_id: session_userId } },
-        ])
+        .aggregate([{ $match: { owner_id: session_userId } }])
         .toArray((err, result) => {
           res.send(result);
         });
@@ -73,9 +71,7 @@ eventRoutes
     try {
       await dbConnect
         .collection("appointmentEvent")
-        .aggregate([
-          { $match: { owner_id: session_userId } },
-        ])
+        .aggregate([{ $match: { owner_id: session_userId } }])
         .toArray((err, result) => {
           res.send(result);
         });
@@ -84,6 +80,23 @@ eventRoutes
       res.send({ error: "Failed to fetch clinic's events" });
     }
   });
+
+// Get course by clinic_id
+eventRoutes.route("/event/match/clinic/:clinic_id").get(async (req, res) => {
+  const dbConnect = db.getDb();
+  const clinicId = toId(req.params.clinic_id);
+  try {
+    await dbConnect
+      .collection("appointmentEvent")
+      .aggregate([{ $match: { clinic_id: new ObjectID(clinicId) } }])
+      .toArray((err, result) => {
+        res.send(result);
+      });
+  } catch {
+    res.status(404);
+    res.send({ error: "Failed to fetch clinic's events" });
+  }
+});
 
 // Get Event by id
 eventRoutes.route("/event/:event_id").get(async (req, res) => {

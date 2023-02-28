@@ -41,6 +41,10 @@ const StaffSchema = new Schema({
     type: String,
     required: false,
   },
+  email:{
+    type: String,
+    required:false,
+  },
   clinic_id: { type: Schema.ObjectId, ref: "Clinic" },
   owner_id: { type: String, ref: "Clinic"},
   staffImage: {

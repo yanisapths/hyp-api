@@ -3,17 +3,19 @@ require("dotenv").config({ path: ".env" });
 const mongoose = require("mongoose");
 const express = require("express");
 var cors = require("cors");
-const bodyParser = require("body-parser");
+var bodyParser = require("body-parser");
 const awsServerlessExpress = require("aws-serverless-express");
 
 var app = express();
-app.use(express.json());
 app.use(cors());
-
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+app.use(cors(corsOptions));
 app.use(express.static('public'));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit:50000}));
-
+app.use(bodyParser.json({limit: '5mb'}));
+app.use(bodyParser.urlencoded({limit: '5mb', extended: true}));
 mongoose.set("strictQuery", true);
 
 // Routes
@@ -33,8 +35,10 @@ const PORT = process.env.PORT || 5000;
 // Global error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "*");
   res.setHeader('Access-Control-Allow-Credentials', true)
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')

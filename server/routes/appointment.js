@@ -231,6 +231,24 @@ appointmentRoutes.route("/appointment/update/:id").put(async (req, res) => {
     });
 });
 
+appointmentRoutes.route("/appointment/bodychart/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const appoinmentId = toId(req.params.id);
+  const updates = {
+    $set: {
+      bodyChart: req.body.bodyChart,
+    },
+  };
+  await dbConnect
+    .collection("appointmentDetails")
+    .updateOne({ _id: appoinmentId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error updating on appointment!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
+});
 // Reject Request for appointment
 appointmentRoutes.route("/appointment/reject/:id").put(async (req, res) => {
   const dbConnect = db.getDb();

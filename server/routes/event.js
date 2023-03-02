@@ -147,7 +147,24 @@ eventRoutes.route("/event/update/:id").put(async (req, res) => {
       }
     });
 });
-
+eventRoutes.route("/event/bodychart/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const eventId = toId(req.params.id);
+  const updates = {
+    $set: {
+      bodyChart: req.body.bodyChart,
+    },
+  };
+  await dbConnect
+    .collection("appointmentEvent")
+    .updateOne({ _id: eventId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error updating on event!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
+});
 // This section will help you delete a event.
 eventRoutes.route("/event/delete/:id").delete(async (req, res) => {
   const dbConnect = db.getDb();

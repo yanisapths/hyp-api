@@ -8,7 +8,6 @@ const awsServerlessExpress = require("aws-serverless-express");
 
 var app = express();
 app.use(cors());
-app.use(cors(corsOptions));
 app.use(express.static('public'));
 app.use(bodyParser.json({limit: '5mb'}));
 app.use(bodyParser.urlencoded({limit: '5mb', extended: true}));

@@ -8,10 +8,6 @@ const awsServerlessExpress = require("aws-serverless-express");
 
 var app = express();
 app.use(cors());
-const corsOptions = {
-  origin: 'http://localhost:3000',
-  credentials: true,
-};
 app.use(cors(corsOptions));
 app.use(express.static('public'));
 app.use(bodyParser.json({limit: '5mb'}));
@@ -35,7 +31,6 @@ const PORT = process.env.PORT || 5000;
 // Global error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "*");

@@ -78,6 +78,25 @@ clinicRoutes.route("/clinic/create").post(async (req, res) => {
   });
 });
 
+clinicRoutes.route("/clinic/profile/:id").put(async (req, res) => {
+  const dbConnect = db.getDb();
+  const clinicId = toId(req.params.id);
+  const updates = {
+    $set: {
+     ownerImageUrl: req.body.ownerImageUrl
+    },
+  };
+  await dbConnect
+    .collection("daycareDetails")
+    .updateOne({ _id: clinicId }, updates, (err, _result) => {
+      if (err) {
+        res.status(400).send(`Error updating!`);
+      } else {
+        res.status(200).send(updates);
+      }
+    });
+});
+
 // This section will help you update a document by id.
 clinicRoutes.route("/clinic/update/:id").put(async (req, res) => {
   const dbConnect = db.getDb();

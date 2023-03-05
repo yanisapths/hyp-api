@@ -26,6 +26,7 @@ const EventSchema = new Schema(
       default: "Approved",
     },
     bodyChart: { type: String, require: false },
+    note: { type: String, require: false},
     owner_id: { type: String, ref: "Clinic" },
     patient_id: { type: String, ref: "Patient" },
     course_id: { type: String, ref: "Course" },

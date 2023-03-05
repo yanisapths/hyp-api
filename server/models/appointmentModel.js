@@ -91,6 +91,7 @@ const AppointmentSchema = new Schema(
       require: false,
     },
     bodyChart: { type: String, require: false },
+    note: { type: String, require: false},
     rejectReason: { type: String, require: false },
     tag: { type: String, require: false },
     owner_id: { type: String, ref: "Clinic" },

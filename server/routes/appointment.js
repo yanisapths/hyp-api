@@ -237,6 +237,7 @@ appointmentRoutes.route("/appointment/bodychart/:id").put(async (req, res) => {
   const updates = {
     $set: {
       bodyChart: req.body.bodyChart,
+      note: req.body.note,
     },
   };
   await dbConnect

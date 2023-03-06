@@ -8,7 +8,7 @@ const PatientSchema = new Schema(
       default: function genUUID() {
         return uuid.v1();
       },
-      required: true,
+      required: false,
     },
   HN: {
     type: String,

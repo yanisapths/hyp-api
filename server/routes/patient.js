@@ -75,6 +75,29 @@ patientRoutes.route("/patient/match/:owner_id").get(async (req, res) => {
   }
 });
 
+
+// This section will help you create a new document.
+patientRoutes
+  .route("/patient/create/clinic/:clinic_id")
+  .post(async (req, res) => {
+    const dbConnect = db.getDb();
+    const clinicId = toId(req.params.clinic_id);
+
+    const create = await Patient.create({
+      ...req.body,
+      clinic_id: clinicId,
+    });
+    dbConnect
+      .collection("clinicPatient")
+      .insertOne(create, (err, result) => {
+        if (err) {
+          res.status(400).send("Error inserting!");
+        } else {
+          return res.status(201).json(create);
+        }
+      });
+  });
+
 // Get patient by id
 patientRoutes.route("/patient/:patient_id").get(async (req, res) => {
   const dbConnect = db.getDb();

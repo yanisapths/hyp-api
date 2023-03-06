@@ -81,11 +81,9 @@ patientRoutes
   .route("/patient/create/clinic/:clinic_id")
   .post(async (req, res) => {
     const dbConnect = db.getDb();
-    const clinicId = toId(req.params.clinic_id);
 
     const create = await Patient.create({
       ...req.body,
-      clinic_id: clinicId,
     });
     dbConnect
       .collection("clinicPatient")

@@ -110,12 +110,7 @@ courseRoutes.route("/course/update/:id").put(async (req, res) => {
   const courseId = toId(req.params.id);
   const updates = {
     $set: {
-      courseName: req.body.courseName,
-      amount: req.body.amount,
-      duration: req.body.duration,
-      totalPrice: req.body.totalPrice,
-      procedures: req.body.procedures,
-      type: req.body.type
+      ...req.body,
     },
   };
   await dbConnect

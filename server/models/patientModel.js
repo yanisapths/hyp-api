@@ -14,6 +14,9 @@ const PatientSchema = new Schema(
     type: String,
     require: false,
   },
+  customer_id: {
+    type: String,
+  },
   firstName: {
     type: String,
     require: false,

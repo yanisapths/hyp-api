@@ -100,34 +100,21 @@ clinicRoutes.route("/clinic/profile/:id").put(async (req, res) => {
 // This section will help you update a document by id.
 clinicRoutes.route("/clinic/update/:id").put(async (req, res) => {
   const dbConnect = db.getDb();
+  const clinicId = toId(req.params.id);
   const updates = {
     $set: {
-      approvalStatus: req.body.approvalStatus,
-      appointmentList: req.body.appointmentList,
-      reviews: req.body.reviews,
+      ...req.body,
     },
   };
-  const clinicId = toId(req.params.id);
-  const clinic = await Clinic.findById(clinicId);
-
-  await dbConnect.collection("daycareDetails").findOneAndUpdate(
-    { _id: clinicId },
-    updates,
-    {
-      new: true,
-      upsert: true,
-      runValidators: true,
-      setDefaultsOnInsert: true,
-    },
-    (err, _result) => {
-      if (err) {
-        res.status(400).send(`Error updating on clinic!`);
-      } else {
-        clinic.save();
-        res.status(200).send(updates);
-      }
+  await dbConnect
+  .collection("daycareDetails")
+  .updateOne({ _id: clinicId }, updates, (err, _result) => {
+    if (err) {
+      res.status(400).send(`Error updating!`);
+    } else {
+      res.status(200).send(updates);
     }
-  );
+  });
 });
 
 /// Authorized Clinic by Olive Approver ///

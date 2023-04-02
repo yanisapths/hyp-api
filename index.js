@@ -22,6 +22,7 @@ app.use(require("./server/routes/course"));
 app.use(require("./server/routes/available"));
 app.use(require("./server/routes/patient"));
 app.use(require("./server/routes/event"));
+app.use(require("./server/routes/customer"));
 
 // get MongoDB driver connection
 const db = require("./server/db/conn");
